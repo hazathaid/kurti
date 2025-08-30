@@ -25,7 +25,7 @@
                                     @foreach($items as $item)
                                         <tr>
                                             <td class="px-4 py-2 text-sm text-gray-600">
-                                                {{ $item->status ?? 'Belum Di isi' }}
+                                                {{ $item->status_grouped }}
                                             </td>
                                             <td class="px-4 py-2">
                                                 <a href="{{ route('kurtis.show', ['murid' => $item->murid_id, 'pekan' => $item->pekan]) }}">
