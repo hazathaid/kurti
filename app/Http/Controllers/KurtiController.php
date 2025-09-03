@@ -89,6 +89,16 @@ class KurtiController extends Controller
 
     }
 
+    public function destroy(Kurti $kurti)
+    {
+        $kurti->delete();
+
+        return redirect()->route('kurtis.show', [
+            'murid' => $kurti->murid_id,
+            'pekan' => $kurti->pekan,
+        ])->with('success', 'Data kurti berhasil dihapus.');
+    }
+
     public function updateCatatan(Request $request, $id)
     {
         $request->validate([

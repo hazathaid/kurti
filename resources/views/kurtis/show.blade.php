@@ -52,9 +52,19 @@
                     @if($user->type === 'fasil')
                         <td class="border px-4 py-2">
                             <a href="{{ route('kurtis.edit', $kurti->id) }}"
-                            class="ml-4 text-blue-500 hover:underline text-sm">
+                            class="text-blue-500 hover:underline text-sm">
                                 Edit
                             </a>
+                            |
+                            <form action="{{ route('kurtis.destroy', $kurti->id) }}" method="POST" class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                        onclick="return confirm('Yakin ingin menghapus aktivitas {{ $kurti->aktivitas }} untuk {{ $kurti->murid->name }}?')"
+                                        class="text-red-600 hover:underline text-sm">
+                                    Hapus
+                                </button>
+                            </form>
                         </td>
                     @endif
                 </tr>

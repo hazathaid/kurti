@@ -49,6 +49,11 @@
             </div>
 
             <div class="mt-6">
+                <a href="{{ route('dashboard') }}"
+                class="mr-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+                    Batal
+                </a>
+
                 <button type="submit"
                         class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
                     Simpan
