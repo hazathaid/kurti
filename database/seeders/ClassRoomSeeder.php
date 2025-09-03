@@ -3,17 +3,17 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\ClassRoom;
+use App\Models\Classroom;
 use App\Models\User;
 
-class ClassRoomSeeder extends Seeder
+class ClassroomSeeder extends Seeder
 {
     public function run(): void
     {
         $fasil  = User::firstWhere('type', 'fasil');
         $murids = User::where('type', 'murid')->pluck('id')->all();
 
-        $class = ClassRoom::firstOrCreate(
+        $class = Classroom::firstOrCreate(
             ['name' => 'Kelas 1A'],
             ['description' => 'Kelas pertama dengan fasil guru']
         );

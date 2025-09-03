@@ -62,7 +62,7 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": ["laravel/pail"]
         }
     },
     "config": {
@@ -75,5 +75,5 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
 }
