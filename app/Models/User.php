@@ -50,7 +50,7 @@ class User extends Authenticatable
     public function classrooms()
     {
         return $this->belongsToMany(
-            ClassRoom::class,
+            Classroom::class,
             'class_room_users',
             'user_id',
             'classroom_id'
@@ -60,11 +60,6 @@ class User extends Authenticatable
     public function kurtis()
     {
         return $this->hasMany(Kurti::class, 'murid_id');
-    }
-
-    public function classroom()
-    {
-        return $this->belongsTo(Classroom::class);
     }
 
     public function orangTua()
@@ -83,5 +78,11 @@ class User extends Authenticatable
     {
         return Kurti::whereIn('murid_id', $this->anak()->pluck('users.id'));
     }
+
+    public function getFirstClassroomAttribute()
+    {
+        return $this->classrooms()->first();
+    }
+
 
 }

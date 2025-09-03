@@ -13,6 +13,8 @@ class Kurti extends Model
         'capaian',
         'amanah_rumah',
         'catatan_orang_tua',
+        'classroom_id',
+        'created_by',
     ];
 
     public function classroom()

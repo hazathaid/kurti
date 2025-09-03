@@ -18,8 +18,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/kurtis', [KurtiController::class, 'index'])->name('kurtis.index');
-    Route::get('/kurtis/{murid}/{pekan}', [KurtiController::class, 'show'])->name('kurtis.show');
+    Route::get('/kurti/{murid}/{pekan}', [KurtiController::class, 'show'])->name('kurtis.show');
     Route::put('/kurtis/{id}/catatan', [KurtiController::class, 'updateCatatan'])->name('kurtis.updateCatatan');
+    Route::get('/kurtis/{murid}/create', [KurtiController::class, 'create'])->name('kurtis.create');
+    Route::post('/kurtis', [KurtiController::class, 'store'])->name('kurtis.store');
+    Route::get('/kurtis/{kurti}/edit', [KurtiController::class, 'edit'])->name('kurtis.edit');
+    Route::put('/kurtis/{kurti}', [KurtiController::class, 'update'])->name('kurtis.update');
 });
 
 require __DIR__.'/auth.php';

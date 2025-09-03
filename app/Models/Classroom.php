@@ -19,4 +19,15 @@ class Classroom extends Model
         );
     }
 
+    public function murid()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'class_room_users',
+            'classroom_id',
+            'user_id'
+        )->where('type', 'murid'); // filter hanya user dengan type murid
+    }
+
+
 }
