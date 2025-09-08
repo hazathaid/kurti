@@ -14,9 +14,10 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="antialiased bg-gray-100">
-    <nav class="bg-gray-800 text-white p-4 flex justify-between">
-        <div class="text-lg font-semibold">
-            {{ config('app.name', 'Laravel') }}
+    <nav class="bg-gray-800 text-white flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <img src="{{ asset('logo.png') }}" alt="Kurti SAI" class="h-8 w-8 object-contain">
+            <span class="text-lg font-bold tracking-wide">Kurti SAI</span>
         </div>
 
         <div class="flex items-center gap-4">
@@ -29,7 +30,7 @@
                     Logout
                 </button>
             </form>
-            <a href="{{ route('masukan') }}" href="https://wa.me/6285603155491" target="_blank"
+            <a href="https://wa.me/6285603155491" target="_blank"
                class="bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded-lg text-sm">
                 Sampaikan Masukan
             </a>

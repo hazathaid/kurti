@@ -14,6 +14,9 @@
 </head>
 <body class="min-h-screen bg-gray-900 flex items-center justify-center px-4">
   <div class="w-full max-w-md bg-gray-800 rounded-2xl shadow-lg p-6">
+    <div class="flex justify-center mb-6">
+      <img src="{{ asset('logo.png') }}" alt="Logo SAIS" class="h-16 w-auto">
+    </div>
     <h1 class="text-2xl font-bold text-white mb-1">Masuk</h1>
     <p class="text-sm text-gray-400 mb-6">Silakan login untuk melanjutkan</p>
 
