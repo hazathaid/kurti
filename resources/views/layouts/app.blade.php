@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kurti SAI</title>
     <script src="//unpkg.com/alpinejs" defer></script>
+    <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/icon/favicon.svg" />
+    <link rel="shortcut icon" href="/icon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Kurti SAIS" />
+    <link rel="manifest" href="/icon/site.webmanifest" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="antialiased bg-gray-100">
@@ -23,6 +29,10 @@
                     Logout
                 </button>
             </form>
+            <a href="{{ route('masukan') }}" href="https://wa.me/6285603155491" target="_blank"
+               class="bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded-lg text-sm">
+                Sampaikan Masukan
+            </a>
         </div>
     </nav>
 

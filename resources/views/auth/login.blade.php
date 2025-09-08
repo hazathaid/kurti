@@ -3,7 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Login</title>
+  <title>Login - Kurti SAI</title>
+  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/icon/favicon.svg" />
+  <link rel="shortcut icon" href="/icon/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/icon/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-title" content="Kurti SAIS" />
+  <link rel="manifest" href="/icon/site.webmanifest" />
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-gray-900 flex items-center justify-center px-4">
