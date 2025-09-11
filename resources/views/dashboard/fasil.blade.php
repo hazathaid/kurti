@@ -15,56 +15,42 @@
 
                 @foreach($groupedByMurid as $murid)
                     <div class="mb-8">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold text-gray-700">
-                                {{ $murid->murid_name }}
-                            </h3>
-                            <a href="{{ route('kurtis.create', ['murid' => $murid->murid_id]) }}"
-                               class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-2 rounded-lg shadow">
-                                + Tambah Kurti
-                            </a>
-                        </div>
+                        <h2 class="text-xl font-semibold mb-4">{{ $murid->murid_name }}</h2>
 
-                        @if($murid->pekan->isEmpty())
-                            <p class="text-gray-400 italic">Belum ada data kurti</p>
-                        @else
-                            <table class="w-full border border-gray-300 text-sm">
-                                <thead class="bg-gray-100">
-                                    <tr>
-                                        <th class="px-4 py-2 border">Pekan</th>
-                                        <th class="px-4 py-2 border">Tanggal</th>
-                                        <th class="px-4 py-2 border">Status</th>
-                                        <th class="px-4 py-2 border">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($murid->pekan as $pekanGroup)
-                                        @php
-                                            $latest = $pekanGroup->items->sortByDesc('created_at')->first();
-                                        @endphp
+                        @foreach($murid->groups as $bulanGroup)
+                            <h3 class="text-md font-medium text-gray-700 mt-4 mb-2">
+                                Bulan: {{ \Carbon\Carbon::parse($bulanGroup->bulan . '-01')->format('F Y') }}
+                            </h3>
+
+                            <div class="overflow-x-auto">
+                                <table class="w-full border text-sm">
+                                    <thead class="bg-gray-100">
                                         <tr>
-                                            <td class="px-4 py-2 border">{{ $pekanGroup->pekan }}</td>
-                                            <td class="px-4 py-2 border">{{ $pekanGroup->created_at->format('d M Y') }}</td>
-                                            <td class="px-4 py-2 border">
-                                                @if(!$latest->catatan_orang_tua)
-                                                    <span class="px-2 py-1 rounded bg-gray-200 text-gray-700 text-xs">Belum diisi</span>
-                                                @elseif($latest->catatan_orang_tua && $latest->status !== 'done')
-                                                    <span class="px-2 py-1 rounded bg-yellow-200 text-yellow-800 text-xs">On Progress</span>
-                                                @else
-                                                    <span class="px-2 py-1 rounded bg-green-200 text-green-800 text-xs">Done</span>
-                                                @endif
-                                            </td>
-                                            <td class="px-4 py-2 border">
-                                                <a href="{{ route('kurtis.show', ['murid' => $murid->murid_id, 'pekan' => $pekanGroup->pekan]) }}"
-                                                   class="text-blue-500 hover:underline text-sm">
-                                                    Lihat
-                                                </a>
-                                            </td>
+                                            <th class="px-4 py-2 border">Pekan</th>
+                                            <th class="px-4 py-2 border">Jumlah Aktivitas</th>
+                                            <th class="px-4 py-2 border">Detail</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        @endif
+                                    </thead>
+                                    <tbody>
+                                        @foreach($bulanGroup->pekans as $pekanGroup)
+                                            <tr class="hover:bg-gray-50">
+                                                <td class="px-4 py-2 border">{{ $pekanGroup->pekan }}</td>
+                                                <td class="px-4 py-2 border">{{ $pekanGroup->items->count() }}</td>
+                                                <td class="px-4 py-2 border">
+                                                    <a href="{{ route('kurtis.show', [
+                                                        'murid' => $murid->murid_id,
+                                                        'group' => $pekanGroup->group_id
+                                                    ]) }}"
+                                                    class="text-blue-500 hover:underline text-sm">
+                                                        Lihat
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @endforeach
                     </div>
                 @endforeach
 

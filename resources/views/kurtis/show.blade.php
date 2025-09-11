@@ -3,8 +3,12 @@
 @section('content')
 <div class="max-w-4xl mx-auto bg-white shadow-md rounded-xl p-6">
     <h2 class="text-2xl font-semibold text-gray-800 mb-4">
-        Detail Kurti - {{ $murid->name }} (Pekan {{ $pekan }})
+        Detail Kurti - {{ $murid->name }}
     </h2>
+    <p class="mb-4 text-gray-600">
+        Bulan: {{ \Carbon\Carbon::parse($group->bulan . '-01')->format('F Y') }},
+        Pekan: {{ $group->pekan }}
+    </p>
 
     <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-100">
@@ -46,21 +50,19 @@
                                 </button>
                             </form>
                         @else
-                            {{ $kurti->catatan_orang_tua ?? '-'}}
+                            {{ $kurti->catatan_orang_tua ?? '-' }}
                         @endif
                     </td>
                     @if($user->type === 'fasil')
                         <td class="border px-4 py-2">
                             <a href="{{ route('kurtis.edit', $kurti->id) }}"
-                            class="text-blue-500 hover:underline text-sm">
-                                Edit
-                            </a>
+                               class="text-blue-500 hover:underline text-sm">Edit</a>
                             |
                             <form action="{{ route('kurtis.destroy', $kurti->id) }}" method="POST" class="inline">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
-                                        onclick="return confirm('Yakin ingin menghapus aktivitas {{ $kurti->aktivitas }} untuk {{ $kurti->murid->name }}?')"
+                                        onclick="return confirm('Yakin ingin menghapus aktivitas {{ $kurti->aktivitas }} untuk {{ $murid->name }}?')"
                                         class="text-red-600 hover:underline text-sm">
                                     Hapus
                                 </button>

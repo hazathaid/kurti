@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-    <div class="max-w-5xl mx-auto p-6 bg-white rounded-lg shadow">
+    <div class="max-w-10xl mx-auto p-6 bg-white rounded-lg shadow">
         <h2 class="text-xl font-bold mb-4">Tambah Data Kurti - {{ $murid->name }}</h2>
 
         <form method="POST" action="{{ route('kurtis.store') }}">
@@ -12,6 +12,7 @@
                 <table class="min-w-full border border-gray-300 rounded-lg">
                     <thead class="bg-gray-100">
                         <tr>
+                            <th class="border px-3 py-2 text-left">Bulan</th>
                             <th class="border px-3 py-2 text-left">Pekan</th>
                             <th class="border px-3 py-2 text-left">Aktivitas</th>
                             <th class="border px-3 py-2 text-left">Amanah Rumah</th>
@@ -22,7 +23,15 @@
                     <tbody id="rows-container">
                         <tr>
                             <td class="border px-3 py-2">
-                                <input type="text" name="kurtis[0][pekan]" class="w-full border-gray-300 rounded-lg">
+                                <input type="month" name="kurtis[0][bulan]" class="w-full border-gray-300 rounded-lg">
+                            </td>
+                            <td class="border px-3 py-2">
+                                <select name="kurtis[0][pekan]" class="w-full border-gray-300 rounded-lg">
+                                    <option value="1">Pekan 1</option>
+                                    <option value="2">Pekan 2</option>
+                                    <option value="3">Pekan 3</option>
+                                    <option value="4">Pekan 4</option>
+                                </select>
                             </td>
                             <td class="border px-3 py-2">
                                 <input type="text" name="kurtis[0][aktivitas]" class="w-full border-gray-300 rounded-lg">
@@ -70,7 +79,15 @@
             const newRow = `
                 <tr>
                     <td class="border px-3 py-2">
-                        <input type="text" name="kurtis[${rowIndex}][pekan]" class="w-full border-gray-300 rounded-lg">
+                        <input type="month" name="kurtis[${rowIndex}][bulan]" class="w-full border-gray-300 rounded-lg">
+                    </td>
+                    <td class="border px-3 py-2">
+                        <select name="kurtis[${rowIndex}][pekan]" class="w-full border-gray-300 rounded-lg">
+                            <option value="1">Pekan 1</option>
+                            <option value="2">Pekan 2</option>
+                            <option value="3">Pekan 3</option>
+                            <option value="4">Pekan 4</option>
+                        </select>
                     </td>
                     <td class="border px-3 py-2">
                         <input type="text" name="kurtis[${rowIndex}][aktivitas]" class="w-full border-gray-300 rounded-lg">

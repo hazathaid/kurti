@@ -17,19 +17,22 @@ class DashboardController extends Controller
         }
     }
 
-    private function kurtis_orang_tua($parent){
+    private function kurtis_orang_tua($parent)
+    {
         $kurtis = $parent->anakKurtis()
-            ->with('murid')
-            ->orderBy('pekan', 'desc')
+            ->with(['murid', 'kurtiGroup']) // ambil relasi murid + group
+            ->orderByDesc('created_at')
             ->get()
             ->groupBy(fn($item) => $item->murid->name) // group per murid
             ->map(function ($muridGroup) {
-                return $muridGroup->groupBy('pekan')
-                    ->map(function ($pekanGroup) {
+                return $muridGroup->groupBy(fn($item) => $item->kurtiGroup->id) // group per group
+                    ->map(function ($groupItems) {
+                        $group = $groupItems->first()->kurtiGroup;
                         return (object) [
-                            'pekan'      => $pekanGroup->first()->pekan,
-                            'created_at' => $pekanGroup->first()->created_at,
-                            'items'      => $pekanGroup,
+                            'bulan'      => $group->bulan,
+                            'group_id'   => $group->id,
+                            'pekan'      => $group->pekan,
+                            'items'      => $groupItems,
                         ];
                     });
             });
@@ -37,30 +40,50 @@ class DashboardController extends Controller
         return view('dashboard.orangtua', compact('kurtis'));
     }
 
-    private function kurtis_fasil($fasil){
+    private function kurtis_fasil($fasil)
+    {
         $classroom = $fasil->classrooms()
-            ->with(['murid.kurtis' => function ($q) {
-                $q->orderBy('pekan', 'desc');
+            ->with(['murid.kurtis.group' => function ($q) {
+                $q->orderBy('bulan', 'desc')
+                ->orderBy('pekan', 'asc');
             }])
             ->first();
-            $groupedByMurid = collect($classroom->murid)
-                ->map(function ($murid) {
+
+        $groupedByMurid = collect($classroom->murid)->map(function ($murid) {
+            // group by bulan (ambil dari relasi group)
+            $bulanGroups = $murid->kurtis
+                ->groupBy(fn($kurti) => optional($kurti->group)->bulan)
+                ->map(function ($itemsByBulan) {
+                    // dalam setiap bulan, group by pekan
+                    $pekanGroups = $itemsByBulan
+                        ->groupBy(fn($kurti) => optional($kurti->group)->pekan)
+                        ->map(function ($itemsByPekan) {
+                            $group = $itemsByPekan->first()->group;
+
+                            return (object) [
+                                'group_id' => $group?->id,
+                                'pekan'    => $group?->pekan,
+                                'items' => $itemsByPekan,
+                            ];
+                        })
+                        ->values();
+
                     return (object) [
-                        'murid_id'   => $murid->id,
-                        'murid_name' => $murid->name,
-                        'pekan'      => $murid->kurtis
-                            ->groupBy('pekan')
-                            ->map(function ($pekanGroup) {
-                                return (object) [
-                                    'pekan'      => $pekanGroup->first()->pekan,
-                                    'created_at' => $pekanGroup->first()->created_at,
-                                    'items'      => $pekanGroup,
-                                ];
-                            }),
+                        'bulan' => optional($itemsByBulan->first()->group)->bulan,
+                        'pekans' => $pekanGroups,
                     ];
-                });
+                })
+                ->values();
+
+            return (object) [
+                'murid_id'   => $murid->id,
+                'murid_name' => $murid->name,
+                'groups'     => $bulanGroups,
+            ];
+        });
 
         return view('dashboard.fasil', compact('classroom', 'groupedByMurid'));
     }
+
 
 }

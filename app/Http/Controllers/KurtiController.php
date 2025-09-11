@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Kurti;
 use App\Models\User;
+use App\Models\KurtiGroup;
 use Illuminate\Support\Facades\Log;
 
 
@@ -19,46 +20,44 @@ class KurtiController extends Controller
 
     public function store(Request $request)
     {
-        Log::info('Request store kurti:', $request->all());
-        try {
-            Log::info('Request store kurti:', $request->all());
-
-            foreach ($request->kurtis as $kurti) {
-
-                Kurti::create([
-                    'murid_id'     => $request->murid_id,
-                    'classroom_id' => $request->classroom_id,
-                    'pekan'        => $kurti['pekan'],
-                    'aktivitas'    => $kurti['aktivitas'] ?? null,
-                    'amanah_rumah' => $kurti['amanah_rumah'] ?? null,
-                    'capaian'      => $kurti['capaian'] ?? null,
-                    'created_by'   => Auth::id(),
-                ]);
-            }
-
-            return redirect()->route('dashboard')
-                ->with('success', 'Data kurti berhasil disimpan.');
-        } catch (\Exception $e) {
-            Log::error('Error store kurti: '.$e->getMessage(), [
-                'trace' => $e->getTraceAsString()
+        foreach ($request->kurtis as $kurtiData) {
+            // cari atau buat group berdasarkan bulan & pekan
+            $group = KurtiGroup::firstOrCreate([
+                'bulan' => $kurtiData['bulan'],
+                'pekan' => $kurtiData['pekan'],
             ]);
 
-            return redirect()->back()
-                ->withInput()
-                ->withErrors(['msg' => 'Terjadi kesalahan: '.$e->getMessage()]);
+            Kurti::create([
+                'murid_id'      => $request->murid_id,
+                'classroom_id'  => $request->classroom_id,
+                'kurti_group_id'=> $group->id,
+                'aktivitas'     => $kurtiData['aktivitas'] ?? null,
+                'amanah_rumah'  => $kurtiData['amanah_rumah'] ?? null,
+                'capaian'       => $kurtiData['capaian'] ?? null,
+                'created_by'    => Auth::id(),
+            ]);
         }
+
+        return redirect()->route('dashboard')
+            ->with('success', 'Data kurti berhasil disimpan.');
     }
 
-    public function show($muridId, $pekan)
-    {
-        $murid = User::findOrFail($muridId);
-        $user = Auth::user();
-        $kurtis = Kurti::where('murid_id', $muridId)
-            ->where('pekan', $pekan)
-            ->orderBy('created_at', 'asc')
-            ->get();
 
-        return view('kurtis.show', compact('murid', 'pekan','kurtis', 'user'));
+    public function show($muridId, $groupId)
+    {
+        $group = KurtiGroup::with(['kurtis' => function($q) use ($muridId) {
+            $q->where('murid_id', $muridId)->with('murid');
+        }])->findOrFail($groupId);
+
+        $murid = User::findOrFail($muridId);
+        $user  = Auth::user();
+
+        return view('kurtis.show', [
+            'group'  => $group,
+            'murid'  => $murid,
+            'kurtis' => $group->kurtis,
+            'user'   => $user,
+        ]);
     }
 
     public function edit(Kurti $kurti)
@@ -76,6 +75,7 @@ class KurtiController extends Controller
         ]);
 
         $kurti->update([
+            'bulan'        => $request->bulan,
             'pekan'        => $request->pekan,
             'aktivitas'    => $request->aktivitas,
             'amanah_rumah' => $request->amanah_rumah,

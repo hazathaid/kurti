@@ -8,12 +8,12 @@ class Kurti extends Model
 {
     protected $fillable = [
         'murid_id',
-        'pekan',
         'aktivitas',
         'capaian',
         'amanah_rumah',
         'catatan_orang_tua',
         'classroom_id',
+        'kurti_group_id',
         'created_by',
     ];
 
@@ -48,6 +48,11 @@ class Kurti extends Model
         }
 
         return 'done';
+    }
+
+    public function group()
+    {
+        return $this->belongsTo(KurtiGroup::class, 'kurti_group_id');
     }
 
 }

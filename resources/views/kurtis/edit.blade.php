@@ -10,6 +10,11 @@
 
         <div class="space-y-4">
             <div>
+                <label class="block text-sm font-medium text-gray-700">Bulan</label>
+                <input type="month" name="bulan" value="{{ old('bulan', $kurti->bulan) }}"
+                       class="w-full border-gray-300 rounded-lg">
+            </div>
+            <div>
                 <label class="block text-sm font-medium text-gray-700">Pekan</label>
                 <input type="text" name="pekan" value="{{ old('pekan', $kurti->pekan) }}"
                        class="w-full border-gray-300 rounded-lg">
