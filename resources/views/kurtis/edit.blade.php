@@ -11,15 +11,18 @@
         <div class="space-y-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700">Bulan</label>
-                <input type="month" name="bulan" value="{{ old('bulan', $kurti->bulan) }}"
+                <input type="month" name="bulan" value="{{ old('bulan', $kurti->group->bulan) }}"
                        class="w-full border-gray-300 rounded-lg">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Pekan</label>
-                <input type="text" name="pekan" value="{{ old('pekan', $kurti->pekan) }}"
-                       class="w-full border-gray-300 rounded-lg">
+                <select name="pekan" class="w-full border-gray-300 rounded-lg">
+                    <option value="1" {{ old('pekan', $kurti->group->pekan) == 1 ? 'selected' : '' }}>Pekan 1</option>
+                    <option value="2" {{ old('pekan', $kurti->group->pekan) == 2 ? 'selected' : '' }}>Pekan 2</option>
+                    <option value="3" {{ old('pekan', $kurti->group->pekan) == 3 ? 'selected' : '' }}>Pekan 3</option>
+                    <option value="4" {{ old('pekan', $kurti->group->pekan) == 4 ? 'selected' : '' }}>Pekan 4</option>
+                </select>
             </div>
-
             <div>
                 <label class="block text-sm font-medium text-gray-700">Aktivitas</label>
                 <input type="text" name="aktivitas" value="{{ old('aktivitas', $kurti->aktivitas) }}"

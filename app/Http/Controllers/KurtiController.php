@@ -62,6 +62,7 @@ class KurtiController extends Controller
 
     public function edit(Kurti $kurti)
     {
+        $kurti->load('group');
         return view('kurtis.edit', compact('kurti'));
     }
 
@@ -73,10 +74,12 @@ class KurtiController extends Controller
             'amanah_rumah' => 'nullable|string',
             'capaian'      => 'nullable|string',
         ]);
-
+        $group = KurtiGroup::firstOrCreate([
+                'bulan' => $request->bulan,
+                'pekan' => $request->pekan,
+        ]);
         $kurti->update([
-            'bulan'        => $request->bulan,
-            'pekan'        => $request->pekan,
+            'kurti_group_id'=> $group->id,
             'aktivitas'    => $request->aktivitas,
             'amanah_rumah' => $request->amanah_rumah,
             'capaian'      => $request->capaian,
@@ -84,19 +87,26 @@ class KurtiController extends Controller
 
         return redirect()->route('kurtis.show', [
             'murid' => $kurti->murid_id,
-            'pekan' => $kurti->pekan,
+            'group' => $kurti->group->id,
         ])->with('success', 'Data kurti berhasil diperbarui.');
 
     }
 
     public function destroy(Kurti $kurti)
     {
+        $kurti->load('group');
+        $kurtiGroupId = $kurti->kurti_group_id;
+        $muridId = $kurti->murid_id;
         $kurti->delete();
 
-        return redirect()->route('kurtis.show', [
-            'murid' => $kurti->murid_id,
-            'pekan' => $kurti->pekan,
-        ])->with('success', 'Data kurti berhasil dihapus.');
+        if(Kurti::where('kurti_group_id', $kurtiGroupId)->where('murid_id', $muridId)->count() === 0) {
+            return redirect()->route('dashboard')->with('success', 'Data kurti berhasil dihapus.');
+        }else{
+            return redirect()->route('kurtis.show', [
+                'murid' => $kurti->murid_id,
+                'group' => kurtiGroupId,
+            ])->with('success', 'Data kurti berhasil dihapus.');
+        }
     }
 
     public function updateCatatan(Request $request, $id)

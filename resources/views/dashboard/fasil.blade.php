@@ -15,8 +15,13 @@
 
                 @foreach($groupedByMurid as $murid)
                     <div class="mb-8">
-                        <h2 class="text-xl font-semibold mb-4">{{ $murid->murid_name }}</h2>
-
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-xl font-semibold mb-4">{{ $murid->murid_name }}</h2>
+                            <a href="{{ route('kurtis.create', ['murid' => $murid->murid_id]) }}"
+                               class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-2 rounded-lg shadow">
+                                + Tambah Kurti
+                            </a>
+                        </div>
                         @foreach($murid->groups as $bulanGroup)
                             <h3 class="text-md font-medium text-gray-700 mt-4 mb-2">
                                 Bulan: {{ \Carbon\Carbon::parse($bulanGroup->bulan . '-01')->format('F Y') }}

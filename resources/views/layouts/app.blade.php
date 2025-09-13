@@ -18,6 +18,11 @@
         <div class="flex items-center gap-3">
             <img src="{{ asset('logo.png') }}" alt="Kurti SAI" class="h-8 w-8 object-contain">
             <span class="text-lg font-bold tracking-wide">Kurti SAI</span>
+            <a href="#" target="_blank"
+               onclick="event.preventDefault(); document.getElementById('comingSoonModal').classList.remove('hidden');"
+               class="bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded-lg text-sm">
+                Bukom
+            </a>
         </div>
 
         <div class="flex items-center gap-4">
@@ -63,6 +68,18 @@
                 {{ session('error') }}
             </div>
         @endif
+        <div id="comingSoonModal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-lg max-w-sm w-full p-6">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800">Coming Soon 🚀</h2>
+                <p class="text-gray-600 mb-6">Fitur ini sedang dalam pengembangan, nantikan ya!</p>
+                <div class="flex justify-end">
+                    <button onclick="document.getElementById('comingSoonModal').classList.add('hidden');"
+                            class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
 
         @yield('content')
     </main>
