@@ -77,9 +77,7 @@ class User extends Authenticatable
 
     public function anakKurtis()
     {
-        return Kurti::whereIn('murid_id', $this->anak()->pluck('users.id')); // kasih prefix biar jelas
-    }
-
+        return Kurti::whereIn('murid_id', $this->anak()->pluck('users.id'));
     }
 
     public function getFirstClassroomAttribute()
