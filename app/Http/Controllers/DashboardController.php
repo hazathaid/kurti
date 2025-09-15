@@ -19,24 +19,30 @@ class DashboardController extends Controller
 
     private function kurtis_orang_tua($parent)
     {
-        $kurtis = $parent->anakKurtis()
-            ->with(['murid', 'kurtiGroup']) // ambil relasi murid + group
+        $anakIds = $parent->anak()->pluck('users.id');
+
+        $kurtis = Kurti::whereIn('murid_id', $anakIds)
+            ->with(['murid', 'group'])
             ->orderByDesc('created_at')
             ->get()
             ->groupBy(fn($item) => $item->murid->name) // group per murid
             ->map(function ($muridGroup) {
-                return $muridGroup->groupBy(fn($item) => $item->kurtiGroup->id) // group per group
-                    ->map(function ($groupItems) {
-                        $group = $groupItems->first()->kurtiGroup;
-                        return (object) [
-                            'bulan'      => $group->bulan,
-                            'group_id'   => $group->id,
-                            'pekan'      => $group->pekan,
-                            'items'      => $groupItems,
-                        ];
+                return $muridGroup
+                    ->groupBy(fn($item) => $item->group->bulan) // group per bulan
+                    ->map(function ($bulanGroup) {
+                        return $bulanGroup
+                            ->groupBy(fn($item) => $item->group->id) // group per pekan (pakai group id)
+                            ->map(function ($pekanItems) {
+                                $group = $pekanItems->first()->group;
+                                return (object) [
+                                    'group_id' => $group->id,
+                                    'bulan'    => $group->bulan,
+                                    'pekan'    => $group->pekan,
+                                    'items'    => $pekanItems,
+                                ];
+                            });
                     });
             });
-
         return view('dashboard.orangtua', compact('kurtis'));
     }
 

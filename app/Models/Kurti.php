@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ClassRoom;
+use App\Models\User;
+Use App\Models\KurtiGroup;
 
 class Kurti extends Model
 {
@@ -25,10 +28,11 @@ class Kurti extends Model
     {
         return $this->belongsTo(User::class, 'murid_id');
     }
+
     public function getStatusGroupedAttribute()
     {
         $kurtis = Kurti::where('murid_id', $this->murid_id)
-            ->where('pekan', $this->pekan)
+            ->where('kurti_group_id', $this->kurti_group_id) // pakai group_id
             ->get();
 
         if ($kurtis->isEmpty()) {

@@ -87,6 +87,7 @@ class DashboardController extends Controller
                 })->values();
 
             return [
+                'classroom' => $classroom,
                 'murid_id'   => $murid->id,
                 'murid_name' => $murid->name,
                 'groups'     => $bulanGroups,
