@@ -102,6 +102,7 @@ class DashboardController extends Controller
                 $data[] = [
                     'classroom' => $classroom->name,
                     'murid_id' => $murid->id,
+                    'current_classroom_id' => $classroom->id,
                     'murid_name' => $murid->name,
                     'groups' => [],
                 ];
@@ -140,9 +141,10 @@ class DashboardController extends Controller
             }
 
             $data[] = [
-                'classroom' => $classroom->name,
+                'classroom' => '',
                 'murid_id' => $murid->id,
                 'murid_name' => $murid->name,
+                'current_classroom_id' => $classroom->id,
                 'groups' => $muridGroups,
             ];
         }

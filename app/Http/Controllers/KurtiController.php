@@ -21,7 +21,6 @@ class KurtiController extends Controller
     public function store(Request $request)
     {
         foreach ($request->kurtis as $kurtiData) {
-            // cari atau buat group berdasarkan bulan & pekan
             $group = KurtiGroup::firstOrCreate([
                 'bulan' => $kurtiData['bulan'],
                 'pekan' => $kurtiData['pekan'],

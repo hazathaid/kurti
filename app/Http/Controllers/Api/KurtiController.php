@@ -37,6 +37,7 @@ class KurtiController extends Controller
                         'murid'       => [
                             'id'   => $kurti->murid->id,
                             'name' => $kurti->murid->name,
+                            'current_classroom_id' => $kurti->murid->current_classroom_id,
                         ],
                     ];
                 }),
@@ -62,6 +63,42 @@ class KurtiController extends Controller
             'status' => 'success',
             'data'   => $kurti
         ]);
+    }
+
+
+    public function store(Request $request)
+    {
+        $request->validate([
+                'murid_id' => 'required|exists:users,id',
+                'classroom_id' => 'required|exists:classrooms,id',
+                'kurtis'   => 'required|array|min:1',
+                'kurtis.*.aktivitas' => 'required|string|max:255',
+                'kurtis.*.amanah_rumah' => 'nullable|string|max:255',
+                'kurtis.*.capaian' => 'nullable|string|max:255',
+            ]);
+
+            $saved = [];
+            foreach ($request->kurtis as $k) {
+                $group = KurtiGroup::firstOrCreate([
+                    'bulan' => $k['bulan'],
+                    'pekan' => $k['pekan'],
+                ]);
+                $saved[] = Kurti::create([
+                    'murid_id'      => $request->murid_id,
+                    'kurti_group_id'=> $group->id,
+                    'aktivitas'     => $k['aktivitas'],
+                    'amanah_rumah'  => $k['amanah_rumah'] ?? null,
+                    'capaian'       => $k['capaian'] ?? null,
+                    'classroom_id'  => $request->classroom_id,
+                    'created_by'    => Auth::id(),
+                ]);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Semua kurti berhasil dibuat',
+                'data' => $saved,
+            ]);
     }
 
 }

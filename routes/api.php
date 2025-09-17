@@ -12,6 +12,7 @@ Route::post('login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('dashboard', [DashboardController::class, 'index']);
+    Route::post('/kurtis', [KurtiController::class, 'store']);
     Route::get('/kurtis/{muridId}/{groupId}', [KurtiController::class, 'show']);
     Route::put('/kurtis/{id}/catatan', [KurtiController::class, 'updateCatatan']);
 });
