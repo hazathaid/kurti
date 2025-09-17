@@ -4,12 +4,18 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use App\Models\Classroom;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
+        // Classroom
+        $class = Classroom::firstOrCreate(
+            ['name' => 'Kelas 1A'],
+            ['description' => 'Kelas pertama dengan fasil guru']
+        );
         // Admin
         User::create([
             'name' => 'Administrator',
@@ -24,6 +30,7 @@ class UserSeeder extends Seeder
             'email' => 'fasil@example.com',
             'password' => Hash::make('password'),
             'type' => 'fasil',
+            'current_classroom_id' => $class->id
         ]);
 
         // Orangtua
@@ -40,6 +47,7 @@ class UserSeeder extends Seeder
             'email' => 'murid1@example.com',
             'password' => Hash::make('password'),
             'type' => 'murid',
+            'current_classroom_id' => $class->id
         ]);
 
         $murid2 = User::create([
@@ -47,6 +55,7 @@ class UserSeeder extends Seeder
             'email' => 'murid2@example.com',
             'password' => Hash::make('password'),
             'type' => 'murid',
+            'current_classroom_id' => $class->id
         ]);
 
         // Hubungan ortu <-> anak

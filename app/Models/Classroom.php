@@ -19,6 +19,12 @@ class Classroom extends Model
         );
     }
 
+    public function murids()
+    {
+        return $this->hasMany(User::class, 'current_classroom_id')->where('type', 'murid');
+    }
+
+
     public function murid()
     {
         return $this->belongsToMany(

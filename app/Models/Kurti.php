@@ -8,7 +8,8 @@ use App\Models\User;
 Use App\Models\KurtiGroup;
 
 class Kurti extends Model
-{
+{   protected $appends = ['status_grouped'];
+
     protected $fillable = [
         'murid_id',
         'aktivitas',

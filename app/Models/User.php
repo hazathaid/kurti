@@ -63,6 +63,19 @@ class User extends Authenticatable
         return $this->hasMany(Kurti::class, 'murid_id');
     }
 
+    public function kurtiGroups()
+    {
+        return $this->hasManyThrough(
+            KurtiGroup::class,
+            Kurti::class,
+            'murid_id',
+            'id',
+            'id',
+            'kurti_group_id'
+        )->distinct();
+    }
+
+
     public function orangTua()
     {
         return $this->belongsToMany(User::class, 'murid_orang_tuas', 'murid_id', 'orangtua_id')
@@ -85,5 +98,9 @@ class User extends Authenticatable
         return $this->classrooms()->first();
     }
 
+    public function currentClassroom()
+    {
+        return $this->belongsTo(Classroom::class, 'current_classroom_id');
+    }
 
 }
