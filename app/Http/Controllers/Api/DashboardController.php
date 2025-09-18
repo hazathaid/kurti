@@ -141,7 +141,7 @@ class DashboardController extends Controller
             }
 
             $data[] = [
-                'classroom' => '',
+                'classroom' => $classroom->name,
                 'murid_id' => $murid->id,
                 'murid_name' => $murid->name,
                 'current_classroom_id' => $classroom->id,
