@@ -96,63 +96,50 @@ class DashboardController extends Controller
         $data = [];
 
         foreach ($muridList as $murid) {
-            $groups = $murid->kurtiGroups ?? collect([]);
+            $bulanGroups = $murid->kurtis
+                ->groupBy(fn($kurti) => optional($kurti->group)->bulan)
+                ->map(function ($itemsByBulan) {
+                    $pekanGroups = $itemsByBulan
+                        ->groupBy(fn($kurti) => optional($kurti->group)->pekan)
+                        ->map(function ($itemsByPekan) {
+                            $group = $itemsByPekan->first()->group;
 
-            if ($groups->isEmpty()) {
-                $data[] = [
-                    'classroom' => $classroom->name,
-                    'murid_id' => $murid->id,
-                    'current_classroom_id' => $classroom->id,
-                    'murid_name' => $murid->name,
-                    'groups' => [],
-                ];
-                continue;
-            }
-
-            $muridGroups = [];
-            foreach ($groups as $group) {
-                $pekans = $group->kurtis()
-                    ->with('group:id,bulan,pekan')
-                    ->get()
-                    ->groupBy(fn ($k) => $k->murid_id . '-' . $k->group->bulan . '-' . $k->group->pekan);
-
-                $pekanList = [];
-                foreach ($pekans as $key => $pekanItems) {
-                    $first = $pekanItems->first();
-                    $pekanList[] = [
-                        'bulan' => $first->group->bulan,
-                        'pekan' => $first->group->pekan,
-                        'jumlah' => $pekanItems->count(),
-                        'items' => $pekanItems->map(function ($item) {
                             return [
-                                'id' => $item->id,
-                                'tanggal' => $item->created_at->format('Y-m-d'),
-                                'aktivitas' => $item->aktivitas,
-                                'capaian' => $item->capaian,
+                                'group_id' => $group?->id,
+                                'bulan'    => $group?->bulan,
+                                'pekan'    => $group?->pekan,
+                                'jumlah'   => $itemsByPekan->count(),
+                                'items'    => $itemsByPekan->map(function ($item) {
+                                    return [
+                                        'id'       => $item->id,
+                                        'tanggal'  => $item->created_at->format('Y-m-d'),
+                                        'aktivitas'=> $item->aktivitas,
+                                        'capaian'  => $item->capaian,
+                                    ];
+                                })->values(),
                             ];
-                        })->values(),
-                    ];
-                }
+                        })
+                        ->values();
 
-                $muridGroups[] = [
-                    'group_id' => $group->id,
-                    'pekans' => $pekanList,
-                ];
-            }
+                    return [
+                        'bulan'  => optional($itemsByBulan->first()->group)->bulan,
+                        'pekans' => $pekanGroups,
+                    ];
+                })
+                ->values();
 
             $data[] = [
                 'classroom' => $classroom->name,
-                'murid_id' => $murid->id,
-                'murid_name' => $murid->name,
+                'murid_id'  => $murid->id,
+                'murid_name'=> $murid->name,
                 'current_classroom_id' => $classroom->id,
-                'groups' => $muridGroups,
+                'groups'    => $bulanGroups,
             ];
         }
 
         return response()->json([
             'status' => 'success',
-            'data' => array_values($data),
+            'data'   => $data,
         ]);
-
     }
 }
