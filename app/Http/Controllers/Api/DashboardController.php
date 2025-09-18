@@ -43,7 +43,7 @@ class DashboardController extends Controller
 
                     // group per group_id (bulan+pekan)
                     'groups'   => $muridGroup
-                        ->groupBy(fn($item) => $item->group->id. '-' . $item->murid_id)
+                        ->groupBy(fn($item) => $item->group->id)
                         ->map(function ($groupItems) {
                             $group = $groupItems->first()->group;
 
@@ -114,7 +114,7 @@ class DashboardController extends Controller
                 $pekans = $group->kurtis()
                     ->with('group:id,bulan,pekan')
                     ->get()
-                    ->groupBy(fn ($k) => $k->group->id . '-' .  $k->murid_id);
+                    ->groupBy(fn ($k) => $k->murid_id . '-' . $k->group->bulan . '-' . $k->group->pekan);
 
                 $pekanList = [];
                 foreach ($pekans as $key => $pekanItems) {
