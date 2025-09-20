@@ -8,7 +8,7 @@ use App\Models\Kurti;
 use App\Models\User;
 use App\Models\KurtiGroup;
 use Illuminate\Support\Facades\Log;
-
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class KurtiController extends Controller
@@ -120,6 +120,23 @@ class KurtiController extends Controller
         ]);
 
         return back()->with('success', 'Catatan berhasil disimpan!');
+    }
+
+    public function downloadPdf($muridId, $groupId)
+    {
+        // Ambil murid
+        $murid = User::findOrFail($muridId);
+
+        // Ambil data dari tabel kurtis sesuai murid + filter pekan & bulan
+        $laporan = Kurti::where('murid_id', $muridId)
+            ->where('kurti_group_id', $groupId)
+            ->get();
+        $group = $laporan->first()?->group;
+        $classroom = $murid->currentClassroom;
+
+        $pdf = Pdf::loadView('kurtis.pdf', compact('murid','group','laporan','classroom'))->setPaper('a4', 'landscape');
+
+        return $pdf->download("kurti-{$murid->name}-pekan-{$group->pekan}.pdf");
     }
 
 }

@@ -2,9 +2,14 @@
 
 @section('content')
 <div class="max-w-4xl mx-auto bg-white shadow-md rounded-xl p-6">
-    <h2 class="text-2xl font-semibold text-gray-800 mb-4">
-        Detail Kurti - {{ $murid->name }}
-    </h2>
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-semibold text-gray-800 px-4 py-2">
+            Detail Kurti - {{ $murid->name }}
+        </h2>
+        <a href="{{ route('kurti.download.pdf', ['murid' => $murid->id, 'group' => $group->id]) }}" class="bg-red-600 text-white rounded hover:bg-red-700 px-4 py-2">
+            Download PDF
+        </a>
+    </div>
     <p class="mb-4 text-gray-600">
         Bulan: {{ \Carbon\Carbon::parse($group->bulan . '-01')->format('F Y') }},
         Pekan: {{ $group->pekan }}

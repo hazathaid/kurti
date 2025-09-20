@@ -21,6 +21,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/kurtis/{kurti}/edit', [KurtiController::class, 'edit'])->name('kurtis.edit');
     Route::put('/kurtis/{kurti}', [KurtiController::class, 'update'])->name('kurtis.update');
     Route::delete('/kurtis/{kurti}', [KurtiController::class, 'destroy'])->name('kurtis.destroy');
+    Route::get('/kurti/{murid}/{group}/pdf', [KurtiController::class, 'downloadPdf'])->name('kurti.download.pdf');
 });
+
+Route::prefix('admin')
+    ->middleware(['auth', 'admin']) // wajib login & admin
+    ->group(function () {
+        Route::get('/dashboard', function () {
+            return view('admin.dashboard');
+        });
+
+        Route::get('/users', function () {
+            return view('admin.users.index');
+        });
+
+        Route::get('/settings', function () {
+            return view('admin.settings');
+        });
+    });
+
 
 require __DIR__.'/auth.php';
