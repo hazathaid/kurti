@@ -15,7 +15,7 @@
 </head>
 <body>
     <h2>WEEKLY REPORT</h2>
-    <h3>TK SAI SUKABUMI</h3>
+    <h3>{{ $classroom->name }} SAI SUKABUMI</h3>
 
     <table class="info">
         <tr>
