@@ -44,8 +44,8 @@
                 <td style="text-align:center;">{{ $index + 1 }}</td>
                 <td>{{ $item->aktivitas }}</td>
                 <td>{{ $item->capaian }}</td>
-                <td>{{ $item->amanah }}</td>
-                <td>{{ $item->catatan }}</td>
+                <td>{{ $item->_rumah }}</td>
+                <td>{{ $item->catatan_orang_tua }}</td>
             </tr>
             @endforeach
         </tbody>
