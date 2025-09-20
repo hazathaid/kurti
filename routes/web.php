@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KurtiController;
+use App\Http\Controllers\KurtiSubmissionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, 'index'])
@@ -22,6 +23,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/kurtis/{kurti}', [KurtiController::class, 'update'])->name('kurtis.update');
     Route::delete('/kurtis/{kurti}', [KurtiController::class, 'destroy'])->name('kurtis.destroy');
     Route::get('/kurti/{murid}/{group}/pdf', [KurtiController::class, 'downloadPdf'])->name('kurti.download.pdf');
+    Route::get('/kurti-submissions/create', [KurtiSubmissionController::class, 'create'])->name('kurti-submissions.create');
+    Route::post('/kurti-submissions', [KurtiSubmissionController::class, 'store'])->name('kurti-submissions.store');
 });
 
 Route::prefix('admin')

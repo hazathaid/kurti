@@ -14,4 +14,14 @@ class KurtiGroup extends Model
     {
         return $this->hasMany(Kurti::class);
     }
+
+    public function submissions()
+    {
+        return $this->hasMany(KurtiSubmission::class, 'kurti_group_id');
+    }
+
+    public function latestSubmissionForMurid($muridId)
+    {
+        return $this->submissions()->where('murid_id', $muridId)->latest()->first();
+    }
 }

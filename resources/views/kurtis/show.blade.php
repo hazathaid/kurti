@@ -78,6 +78,27 @@
             @endforeach
         </tbody>
     </table>
+    @php
+        $submission = $group->latestSubmissionForMurid($murid->id);
+    @endphp
+
+    @if($submission)
+        <p class="text-green-600">Sudah upload ({{ $submission->created_at->format('d M Y') }})</p>
+        <img src="{{ asset('storage/' . $submission->file_path) }}" alt="Foto Kurti" class="mt-4 border rounded-lg max-w-full h-auto">
+    @else
+        <h3 class="text-lg font-semibold mt-6 mb-2">Atau Upload Foto Kurti</h3>
+        <form action="{{ route('kurti-submissions.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-2">
+            @csrf
+            <input type="hidden" name="murid_id" value="{{ $murid->id }}">
+            <input type="hidden" name="kurti_group_id" value="{{ $group->id }}">
+
+            <label class="text-sm font-medium">Upload Foto Kurti</label>
+            <input type="file" name="file_path" required class="border rounded px-3 py-2 text-sm">
+            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
+                Upload
+            </button>
+        </form>
+    @endif
 
     <div class="mt-6">
         <a href="{{ route('dashboard') }}"
