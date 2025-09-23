@@ -25,20 +25,17 @@
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Aktivitas</label>
-                <input type="text" name="aktivitas" value="{{ old('aktivitas', $kurti->aktivitas) }}"
-                       class="w-full border-gray-300 rounded-lg">
+                <textarea name="aktivitas" class="w-full border-gray-300 rounded-lg">{{ old('aktivitas', $kurti->aktivitas) }}</textarea>
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700">Amanah Rumah</label>
-                <input type="text" name="amanah_rumah" value="{{ old('amanah_rumah', $kurti->amanah_rumah) }}"
-                       class="w-full border-gray-300 rounded-lg">
+                <textarea name="amanah_rumah" class="w-full border-gray-300 rounded-lg">{{ old('amanah_rumah', $kurti->amanah_rumah) }}</textarea>
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700">Capaian</label>
-                <input type="text" name="capaian" value="{{ old('capaian', $kurti->capaian) }}"
-                       class="w-full border-gray-300 rounded-lg">
+                <textarea name="capaian" class="w-full border-gray-300 rounded-lg">{{ old('capaian', $kurti->capaian) }}</textarea>               <!-- Changed from input to textarea -->
             </div>
         </div>
 

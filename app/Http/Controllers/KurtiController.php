@@ -103,7 +103,7 @@ class KurtiController extends Controller
         }else{
             return redirect()->route('kurtis.show', [
                 'murid' => $kurti->murid_id,
-                'group' => kurtiGroupId,
+                'group' => $kurtiGroupId,
             ])->with('success', 'Data kurti berhasil dihapus.');
         }
     }

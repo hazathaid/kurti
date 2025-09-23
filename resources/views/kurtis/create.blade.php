@@ -34,13 +34,13 @@
                                 </select>
                             </td>
                             <td class="border px-3 py-2">
-                                <input type="text" name="kurtis[0][aktivitas]" class="w-full border-gray-300 rounded-lg">
+                                <textarea name="kurtis[0][aktivitas]" class="w-full border-gray-300 rounded-lg"></textarea>
                             </td>
                             <td class="border px-3 py-2">
-                                <input type="text" name="kurtis[0][amanah_rumah]" class="w-full border-gray-300 rounded-lg">
+                                <textarea name="kurtis[0][amanah_rumah]" class="w-full border-gray-300 rounded-lg"></textarea>
                             </td>
                             <td class="border px-3 py-2">
-                                <input type="text" name="kurtis[0][capaian]" class="w-full border-gray-300 rounded-lg">
+                                <textarea name="kurtis[0][capaian]" class="w-full border-gray-300 rounded-lg"></textarea>
                             </td>
                             <td class="border px-3 py-2 text-center">
                                 <button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700">Hapus</button>
@@ -90,13 +90,13 @@
                         </select>
                     </td>
                     <td class="border px-3 py-2">
-                        <input type="text" name="kurtis[${rowIndex}][aktivitas]" class="w-full border-gray-300 rounded-lg">
+                        <textarea name="kurtis[${rowIndex}][aktivitas]" class="w-full border-gray-300 rounded-lg"></textarea>
                     </td>
                     <td class="border px-3 py-2">
-                        <input type="text" name="kurtis[${rowIndex}][amanah_rumah]" class="w-full border-gray-300 rounded-lg">
+                        <textarea name="kurtis[${rowIndex}][amanah_rumah]" class="w-full border-gray-300 rounded-lg"></textarea>
                     </td>
                     <td class="border px-3 py-2">
-                        <input type="text" name="kurtis[${rowIndex}][capaian]" class="w-full border-gray-300 rounded-lg">
+                        <textarea name="kurtis[${rowIndex}][capaian]" class="w-full border-gray-300 rounded-lg"></textarea>
                     </td>
                     <td class="border px-3 py-2 text-center">
                         <button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700">Hapus</button>
