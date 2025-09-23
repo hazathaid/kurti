@@ -44,7 +44,7 @@
                             <form action="{{ route('kurtis.updateCatatan', $kurti->id) }}" method="POST" class="flex gap-2">
                                 @csrf
                                 @method('PUT')
-                                <textarea name="catatan_orang_tua" class="flex-1 border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none" placeholder="Isi catatan...">{{ $kurti->catatan_orang_tua }}</textarea>
+                                <textarea name="catatan_orang_tua" class="resize-none border rounded-lg px-3 py-2 text-sm" oninput="this.style.height='auto'; this.style.height=this.scrollHeight+'px'">{{ $kurti->catatan_orang_tua }}</textarea>
                                 <button type="submit"
                                         class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg text-sm">
                                     Simpan
