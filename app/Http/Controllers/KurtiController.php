@@ -139,4 +139,144 @@ class KurtiController extends Controller
         return $pdf->download("kurti-{$murid->name}-pekan-{$group->pekan}.pdf");
     }
 
+public function rekap()
+    {
+        $fasil = auth()->user(); // asumsi fasil dari user login
+
+        $classroom = $fasil->classrooms()
+            ->with([
+                'murid.kurtis.group' => function ($q) {
+                    $q->orderBy('bulan', 'desc')
+                      ->orderBy('pekan', 'asc');
+                },
+                'murid.kurtiSubmissions',
+            ])
+            ->first();
+
+        $groupedByMurid = collect($classroom->murid)->map(function ($murid) {
+            $bulanGroups = $murid->kurtis
+                ->groupBy(fn($kurti) => optional($kurti->group)->bulan)
+                ->map(function ($itemsByBulan) use ($murid) {
+                    $pekanGroups = $itemsByBulan
+                        ->groupBy(fn($kurti) => optional($kurti->group)->pekan)
+                        ->map(function ($itemsByPekan) use ($murid) {
+                            $group = $itemsByPekan->first()->group;
+
+                            // cek submission
+                            $hasSubmission = $murid->kurtiSubmissions
+                                ->where('group_id', $group?->id)
+                                ->isNotEmpty();
+
+                            // cek catatan orang tua
+                            $totalKurti = $itemsByPekan->count();
+                            $filledNotes = $itemsByPekan
+                                ->whereNotNull('catatan_orang_tua')
+                                ->where('catatan_orang_tua', '!=', '')
+                                ->count();
+
+                            if ($hasSubmission || ($totalKurti > 0 && $filledNotes === $totalKurti)) {
+                                $status = 'Sudah isi';
+                            } elseif ($filledNotes > 0 && $filledNotes < $totalKurti) {
+                                $status = 'On progress';
+                            } else {
+                                $status = 'Belum isi';
+                            }
+
+                            return (object) [
+                                'group_id' => $group?->id,
+                                'bulan'    => $group?->bulan,
+                                'pekan'    => $group?->pekan,
+                                'status'   => $status,
+                            ];
+                        })
+                        ->values();
+
+                    return (object) [
+                        'bulan'  => optional($itemsByBulan->first()->group)->bulan,
+                        'pekans' => $pekanGroups,
+                    ];
+                })
+                ->values();
+
+            return (object) [
+                'murid_id'   => $murid->id,
+                'murid_name' => $murid->name,
+                'groups'     => $bulanGroups,
+            ];
+        });
+
+        return view('kurtis.rekap', compact('groupedByMurid', 'classroom'));
+    }
+
+    public function downloadRekap()
+    {
+        $fasil = auth()->user();
+
+        $classroom = $fasil->classrooms()
+            ->with([
+                'murid.kurtis.group',
+                'murid.kurtiSubmissions',
+            ])
+            ->first();
+
+        $groupedByMurid = $this->buildRekap($classroom);
+
+        $pdf = Pdf::loadView('kurtis.rekap_pdf', compact('groupedByMurid', 'classroom'))
+                  ->setPaper('a4', 'landscape');
+
+        return $pdf->download('rekap-kurti.pdf');
+    }
+
+    private function buildRekap($classroom)
+    {
+        return collect($classroom->murid)->map(function ($murid) {
+            $bulanGroups = $murid->kurtis
+                ->groupBy(fn($kurti) => optional($kurti->group)->bulan)
+                ->map(function ($itemsByBulan) use ($murid) {
+                    $pekanGroups = $itemsByBulan
+                        ->groupBy(fn($kurti) => optional($kurti->group)->pekan)
+                        ->map(function ($itemsByPekan) use ($murid) {
+                            $group = $itemsByPekan->first()->group;
+
+                            $hasSubmission = $murid->kurtiSubmissions
+                                ->where('group_id', $group?->id)
+                                ->isNotEmpty();
+
+                            $totalKurti = $itemsByPekan->count();
+                            $filledNotes = $itemsByPekan
+                                ->whereNotNull('catatan_orang_tua')
+                                ->where('catatan_orang_tua', '!=', '')
+                                ->count();
+
+                            if ($hasSubmission || ($totalKurti > 0 && $filledNotes === $totalKurti)) {
+                                $status = 'Sudah isi';
+                            } elseif ($filledNotes > 0 && $filledNotes < $totalKurti) {
+                                $status = 'On progress';
+                            } else {
+                                $status = 'Belum isi';
+                            }
+
+                            return (object) [
+                                'group_id' => $group?->id,
+                                'bulan'    => $group?->bulan,
+                                'pekan'    => $group?->pekan,
+                                'status'   => $status,
+                            ];
+                        })
+                        ->values();
+
+                    return (object) [
+                        'bulan'  => optional($itemsByBulan->first()->group)->bulan,
+                        'pekans' => $pekanGroups,
+                    ];
+                })
+                ->values();
+
+            return (object) [
+                'murid_id'   => $murid->id,
+                'murid_name' => $murid->name,
+                'groups'     => $bulanGroups,
+            ];
+        });
+    }
 }
