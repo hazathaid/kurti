@@ -11,7 +11,7 @@ class KurtiSubmission extends Model
 
     public function murid()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'murid_id');
     }
 
     public function group()

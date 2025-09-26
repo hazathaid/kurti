@@ -103,4 +103,9 @@ class User extends Authenticatable
         return $this->belongsTo(Classroom::class, 'current_classroom_id');
     }
 
+    public function kurtiSubmissions()
+    {
+        return $this->hasMany(KurtiSubmission::class, 'murid_id');
+    }
+
 }

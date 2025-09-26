@@ -25,6 +25,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/kurti/{murid}/{group}/pdf', [KurtiController::class, 'downloadPdf'])->name('kurti.download.pdf');
     Route::get('/kurti-submissions/create', [KurtiSubmissionController::class, 'create'])->name('kurti-submissions.create');
     Route::post('/kurti-submissions', [KurtiSubmissionController::class, 'store'])->name('kurti-submissions.store');
+    Route::get('kurti/rekap', [KurtiController::class, 'rekap'])->name('rekap.kurti');
+    Route::get('/kurtis/rekap/download', [KurtiController::class, 'downloadRekap'])->name('kurtis.rekap.download');
 });
 
 Route::prefix('admin')

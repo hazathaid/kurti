@@ -7,9 +7,15 @@
     @if($classroom)
         <div class="mb-10 bg-white shadow rounded-lg">
             <div class="p-4 border-b">
-                <h2 class="text-lg font-semibold">
-                    Kurti di Kelas "{{ $classroom->name }}"
-                </h2>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold">
+                        Kurti di Kelas "{{ $classroom->name }}"
+                    </h2>
+                    <a href="{{ route('rekap.kurti') }}"
+                    class="text-white text-sm bg-red-600 rounded hover:bg-red-500 px-4 py-2">
+                        Rekap
+                    </a>
+                </div>
             </div>
             <div class="p-4 space-y-8">
 
