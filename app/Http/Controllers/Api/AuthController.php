@@ -9,6 +9,10 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
+    public function test(){
+        return response()->json(['message' => 'On API']);
+    }
+
     public function login(Request $request)
     {
         $request->validate([
