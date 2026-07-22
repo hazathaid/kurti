@@ -33,7 +33,7 @@ class KurtiController extends Controller
                         'aktivitas'   => $kurti->aktivitas,
                         'amanah_rumah'=> $kurti->amanah_rumah,
                         'capaian'     => $kurti->capaian,
-                        'catatan_orangtua'      => $kurti->catatan_orangtua ?? null,
+                        'catatan_orangtua'      => $kurti->catatan_orang_tua,
                         'murid'       => [
                             'id'   => $kurti->murid->id,
                             'name' => $kurti->murid->name,
@@ -55,8 +55,19 @@ class KurtiController extends Controller
 
     public function updateCatatan(Request $request, $id)
     {
+        $user = Auth::user();
+
+        abort_unless($user->type === 'orangtua', 403);
+
         $kurti = Kurti::findOrFail($id);
-        $kurti->catatan_orang_tua = $request->input('catatan_orangtua');
+
+        abort_unless($user->anak()->whereKey($kurti->murid_id)->exists(), 403);
+
+        $validated = $request->validate([
+            'catatan_orangtua' => 'present|nullable|string|max:255',
+        ]);
+
+        $kurti->catatan_orang_tua = $validated['catatan_orangtua'];
         $kurti->save();
 
         return response()->json([
