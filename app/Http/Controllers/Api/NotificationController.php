@@ -8,7 +8,7 @@ class NotificationController extends Controller
     public function sendExpoPush($expoToken, $title, $body)
     {
         $response = Http::post('https://exp.host/--/api/v2/push/send', [
-            'to' => $expoToken, // ExponentPushToken[...]
+            'to' => $expoToken,
             'title' => $title,
             'body' => $body,
             'sound' => 'default', // optional
