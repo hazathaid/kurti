@@ -7,6 +7,7 @@ use App\Models\Kurti;
 use App\Models\KurtiGroup;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class KurtiController extends Controller
@@ -79,6 +80,26 @@ class KurtiController extends Controller
 
     public function store(Request $request)
     {
+        $user = Auth::user();
+
+        abort_unless($user->type === 'fasil', 403);
+
+        $classroomId = $user->current_classroom_id;
+
+        abort_unless(
+            $classroomId !== null
+            && (string) $request->input('classroom_id') === (string) $classroomId,
+            403
+        );
+
+        abort_unless(
+            User::whereKey($request->input('murid_id'))
+                ->where('type', 'murid')
+                ->where('current_classroom_id', $classroomId)
+                ->exists(),
+            403
+        );
+
         $request->validate([
                 'murid_id' => 'required|exists:users,id',
                 'classroom_id' => 'required|exists:classrooms,id',
@@ -88,22 +109,27 @@ class KurtiController extends Controller
                 'kurtis.*.capaian' => 'nullable|string|max:255',
             ]);
 
-            $saved = [];
-            foreach ($request->kurtis as $k) {
-                $group = KurtiGroup::firstOrCreate([
-                    'bulan' => $k['bulan'],
-                    'pekan' => $k['pekan'],
-                ]);
-                $saved[] = Kurti::create([
-                    'murid_id'      => $request->murid_id,
-                    'kurti_group_id'=> $group->id,
-                    'aktivitas'     => $k['aktivitas'],
-                    'amanah_rumah'  => $k['amanah_rumah'] ?? null,
-                    'capaian'       => $k['capaian'] ?? null,
-                    'classroom_id'  => $request->classroom_id,
-                    'created_by'    => Auth::id(),
-                ]);
-            }
+            $saved = DB::transaction(function () use ($request) {
+                $saved = [];
+
+                foreach ($request->kurtis as $k) {
+                    $group = KurtiGroup::firstOrCreate([
+                        'bulan' => $k['bulan'],
+                        'pekan' => $k['pekan'],
+                    ]);
+                    $saved[] = Kurti::create([
+                        'murid_id'      => $request->murid_id,
+                        'kurti_group_id'=> $group->id,
+                        'aktivitas'     => $k['aktivitas'],
+                        'amanah_rumah'  => $k['amanah_rumah'] ?? null,
+                        'capaian'       => $k['capaian'] ?? null,
+                        'classroom_id'  => $request->classroom_id,
+                        'created_by'    => Auth::id(),
+                    ]);
+                }
+
+                return $saved;
+            });
 
             return response()->json([
                 'status' => 'success',
