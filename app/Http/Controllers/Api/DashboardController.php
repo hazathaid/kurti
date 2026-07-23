@@ -1,8 +1,8 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -14,12 +14,12 @@ class DashboardController extends Controller
         if ($user->type === 'orangtua') {
             return response()->json([
                 'status' => 'success',
-                'data'   => $this->kurtis_orang_tua($user)
+                'data' => $this->kurtis_orang_tua($user),
             ]);
         } elseif ($user->type === 'fasil') {
             return response()->json([
                 'status' => 'success',
-                'data'   => $this->kurtis_fasil($user)
+                'data' => $this->kurtis_fasil($user),
             ]);
         }
 
@@ -32,18 +32,18 @@ class DashboardController extends Controller
             ->with(['murid', 'group'])
             ->orderByDesc('created_at')
             ->get()
-            ->groupBy(fn($item) => $item->murid->id)
+            ->groupBy(fn ($item) => $item->murid->id)
             ->map(function ($muridGroup) {
                 $murid = $muridGroup->first()->murid;
 
                 return [
                     'murid_id' => $murid->id,
-                    'nama'     => $murid->name,
-                    'bulan'    => $muridGroup->first()->group->bulan,
+                    'nama' => $murid->name,
+                    'bulan' => $muridGroup->first()->group->bulan,
 
                     // group per group_id (bulan+pekan)
-                    'groups'   => $muridGroup
-                        ->groupBy(fn($item) => $item->group->id)
+                    'groups' => $muridGroup
+                        ->groupBy(fn ($item) => $item->group->id)
                         ->map(function ($groupItems) {
                             $group = $groupItems->first()->group;
 
@@ -65,22 +65,22 @@ class DashboardController extends Controller
                             }
 
                             return [
-                                'group_id'    => $group->id,
-                                'bulan'       => $group->bulan,
-                                'pekan'       => $group->pekan,
-                                'status'      => $status,
+                                'group_id' => $group->id,
+                                'bulan' => $group->bulan,
+                                'pekan' => $group->pekan,
+                                'status' => $status,
 
                                 // hitungan buat dashboard
                                 'total_aktivitas' => $groupItems->count(),
-                                'sudah_diisi'     => $filledCount,
-                                'belum_diisi'     => $groupItems->count() - $filledCount,
+                                'sudah_diisi' => $filledCount,
+                                'belum_diisi' => $groupItems->count() - $filledCount,
 
-                                'items' => $groupItems->map(fn($item) => [
-                                    'id'        => $item->id,
-                                    'tanggal'   => $item->created_at->format('Y-m-d'),
+                                'items' => $groupItems->map(fn ($item) => [
+                                    'id' => $item->id,
+                                    'tanggal' => $item->created_at->format('Y-m-d'),
                                     'aktivitas' => $item->aktivitas,
-                                    'capaian'   => $item->capaian,
-                                    'status'    => $item->status_grouped,
+                                    'capaian' => $item->capaian,
+                                    'status' => $item->status_grouped,
                                 ])->values(),
                             ];
                         })->values(),
@@ -97,24 +97,24 @@ class DashboardController extends Controller
 
         foreach ($muridList as $murid) {
             $bulanGroups = $murid->kurtis
-                ->groupBy(fn($kurti) => optional($kurti->group)->bulan)
+                ->groupBy(fn ($kurti) => optional($kurti->group)->bulan)
                 ->map(function ($itemsByBulan) {
                     $pekanGroups = $itemsByBulan
-                        ->groupBy(fn($kurti) => optional($kurti->group)->pekan)
+                        ->groupBy(fn ($kurti) => optional($kurti->group)->pekan)
                         ->map(function ($itemsByPekan) {
                             $group = $itemsByPekan->first()->group;
 
                             return [
                                 'group_id' => $group?->id,
-                                'bulan'    => $group?->bulan,
-                                'pekan'    => $group?->pekan,
-                                'jumlah'   => $itemsByPekan->count(),
-                                'items'    => $itemsByPekan->map(function ($item) {
+                                'bulan' => $group?->bulan,
+                                'pekan' => $group?->pekan,
+                                'jumlah' => $itemsByPekan->count(),
+                                'items' => $itemsByPekan->map(function ($item) {
                                     return [
-                                        'id'       => $item->id,
-                                        'tanggal'  => $item->created_at->format('Y-m-d'),
-                                        'aktivitas'=> $item->aktivitas,
-                                        'capaian'  => $item->capaian,
+                                        'id' => $item->id,
+                                        'tanggal' => $item->created_at->format('Y-m-d'),
+                                        'aktivitas' => $item->aktivitas,
+                                        'capaian' => $item->capaian,
                                     ];
                                 })->values(),
                             ];
@@ -122,7 +122,7 @@ class DashboardController extends Controller
                         ->values();
 
                     return [
-                        'bulan'  => optional($itemsByBulan->first()->group)->bulan,
+                        'bulan' => optional($itemsByBulan->first()->group)->bulan,
                         'pekans' => $pekanGroups,
                     ];
                 })
@@ -130,16 +130,13 @@ class DashboardController extends Controller
 
             $data[] = [
                 'classroom' => $classroom->name,
-                'murid_id'  => $murid->id,
-                'murid_name'=> $murid->name,
+                'murid_id' => $murid->id,
+                'murid_name' => $murid->name,
                 'current_classroom_id' => $classroom->id,
-                'groups'    => $bulanGroups,
+                'groups' => $bulanGroups,
             ];
         }
 
-        return response()->json([
-            'status' => 'success',
-            'data'   => $data,
-        ]);
+        return $data;
     }
 }

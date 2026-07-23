@@ -78,6 +78,21 @@ test('dashboard is available to parents and facilitators', function (string $typ
         ->assertJsonStructure(['data']);
 })->with(['orangtua', 'fasil']);
 
+test('facilitator dashboard data is not wrapped in a second response envelope', function () {
+    $classroom = Classroom::create(['name' => 'Kelas QA']);
+    $facilitator = apiUser('fasil', ['current_classroom_id' => $classroom->id]);
+    $child = apiUser('murid', ['current_classroom_id' => $classroom->id]);
+    apiKurti($child, $classroom, $facilitator);
+    Sanctum::actingAs($facilitator);
+
+    $this->getJson('/api/dashboard')
+        ->assertOk()
+        ->assertJsonPath('status', 'success')
+        ->assertJsonPath('data.0.murid_id', $child->id)
+        ->assertJsonMissingPath('data.status')
+        ->assertJsonMissingPath('data.data');
+});
+
 test('parent cannot read another parents child kurti', function () {
     $classroom = Classroom::create(['name' => 'Kelas A']);
     $facilitator = apiUser('fasil', ['current_classroom_id' => $classroom->id]);
