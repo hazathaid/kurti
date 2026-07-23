@@ -111,11 +111,12 @@ Selesai jika semua test terkait lulus.
 - [x] Hapus kode Expo Router setelah dipastikan tidak dipakai.
 - [x] Hapus `src/AppNavigator.js` lama jika tidak dipakai.
 - [x] Hapus `src/screens/DashboardScreen.js` lama jika tidak dipakai.
-- [!] Jalankan aplikasi dan pastikan login serta semua route masih dapat dibuka.
+- [x] Jalankan aplikasi dan pastikan login serta semua route masih dapat dibuka.
 
 Catatan: penghapusan file dilakukan hanya setelah penggunaan diperiksa.
-Development build berhasil dipasang pada emulator dan layar login tampil. Semua
-route setelah login masih memerlukan akun serta data uji orang tua/fasilitator.
+Development build SDK 54 dijalankan pada emulator Android API 35. Login, kedua
+dashboard, detail Kurti, editor catatan orang tua, form pembuatan Kurti, pemulihan
+sesi, dan logout berhasil dibuka melalui React Navigation.
 
 ### APP-02 — Pusatkan konfigurasi API
 
@@ -413,47 +414,63 @@ autentikasi web, profil, dan notifikasi.
 
 ### QA-03 — Uji alur orang tua
 
-- [!] Login.
-- [!] Tutup dan buka kembali aplikasi.
-- [!] Lihat dashboard.
-- [!] Refresh dashboard.
-- [!] Buka detail.
-- [!] Simpan catatan.
-- [!] Verifikasi status dashboard berubah.
-- [!] Logout.
+- [x] Login.
+- [x] Tutup dan buka kembali aplikasi.
+- [x] Lihat dashboard.
+- [x] Refresh dashboard.
+- [x] Buka detail.
+- [x] Simpan catatan.
+- [x] Verifikasi status dashboard berubah.
+- [x] Logout.
 
-Catatan: development build Android berhasil dipasang dan layar login tampil.
-Alur setelah login memerlukan kredensial dan data uji orang tua yang belum
-tersedia.
+Catatan: diuji pada emulator Android API 35 dengan database QA SQLite lokal.
+Sesi berhasil dipulihkan setelah aplikasi dihentikan dan dibuka kembali. Catatan
+baru tersimpan, tetap ada saat detail dimuat ulang, dan status dashboard berubah
+dari 1/2 menjadi 2/2 aktivitas terisi. Pull-to-refresh dan logout berhasil.
 
 ### QA-04 — Uji alur fasilitator
 
-- [!] Login.
-- [!] Lihat kelas dan murid.
-- [!] Buka detail Kurti.
-- [!] Buat satu aktivitas.
-- [!] Buat beberapa aktivitas.
-- [!] Verifikasi dashboard refresh.
-- [!] Verifikasi catatan orang tua bersifat read-only.
-- [!] Logout.
+- [x] Login.
+- [x] Lihat kelas dan murid.
+- [x] Buka detail Kurti.
+- [x] Buat satu aktivitas.
+- [x] Buat beberapa aktivitas.
+- [x] Verifikasi dashboard refresh.
+- [x] Verifikasi catatan orang tua bersifat read-only.
+- [x] Logout.
 
-Catatan: development build Android berhasil dipasang dan layar login tampil.
-Alur setelah login memerlukan kredensial dan data uji fasilitator yang belum
-tersedia.
+Catatan: kelas dan dua murid QA tampil pada dashboard. Satu aktivitas serta dua
+aktivitas dalam satu request berhasil dibuat; kelompok baru langsung tampil
+setelah kembali ke dashboard. Detail dapat dibuka, catatan orang tua berupa teks
+tanpa editor untuk fasilitator, dan logout berhasil.
 
 ### QA-05 — Uji error dan keamanan
 
-- [!] Uji tanpa koneksi.
-- [!] Uji koneksi lambat.
-- [!] Uji token kedaluwarsa.
-- [!] Uji kredensial salah.
-- [!] Uji validasi form.
-- [!] Uji penggantian `muridId`, `groupId`, dan `kurtiId` secara manual.
-- [!] Pastikan data pengguna lain tidak dapat dibaca atau diubah.
+- [x] Uji tanpa koneksi.
+- [x] Uji koneksi lambat.
+- [x] Uji token kedaluwarsa.
+- [x] Uji kredensial salah.
+- [x] Uji validasi form.
+- [x] Uji penggantian `muridId`, `groupId`, dan `kurtiId` secara manual.
+- [x] Pastikan data pengguna lain tidak dapat dibaca atau diubah.
 
-Catatan: pemeriksaan statis dan seluruh test backend lulus. Pengujian dinamis
-tetap memerlukan aplikasi yang berhasil dimuat, backend aktif, serta akun dan
-data uji.
+Catatan: backend dihentikan untuk uji tanpa koneksi dan emulator memakai profil
+latensi GPRS untuk uji koneksi lambat; aplikasi tetap responsif dan menampilkan
+pesan koneksi yang ramah. Token QA dicabut dari SQLite dan aplikasi kembali ke
+login pada respons 401. Kredensial salah ditolak 401. Form kosong menampilkan
+error bulan, pekan, dan aktivitas; payload API tidak valid ditolak 422.
+Manipulasi ID menghasilkan 403 untuk anak/Kurti pengguna lain serta 404 untuk
+grup atau Kurti yang tidak cocok/tidak ada.
+
+Akun QA hanya dibuat oleh `Database\Seeders\QaSeeder` pada environment
+`local`/`testing` dengan koneksi SQLite:
+
+- Orang tua: `qa.ortu@kurti.local`
+- Fasilitator: `qa.fasil@kurti.local`
+- Password keduanya: `Kurti-QA-2026!`
+
+Seeder juga menyediakan akun orang tua dan murid lain untuk pengujian isolasi
+data. Seeder menolak berjalan pada koneksi selain SQLite.
 
 ### RELEASE-01 — Persiapan build
 
