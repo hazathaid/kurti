@@ -33,10 +33,10 @@ Selesai jika respons fasilitator berbentuk:
 
 ### API-02 — Tambahkan validasi pembuatan Kurti
 
-- [ ] Validasi `kurtis.*.bulan` sebagai field wajib dengan format yang disepakati.
-- [ ] Validasi `kurtis.*.pekan` sebagai field wajib.
-- [ ] Validasi `murid_id` dan `classroom_id` sesuai akses pengguna.
-- [ ] Kembalikan error validasi dengan status `422`.
+- [x] Validasi `kurtis.*.bulan` sebagai field wajib dengan format yang disepakati.
+- [x] Validasi `kurtis.*.pekan` sebagai field wajib.
+- [x] Validasi `murid_id` dan `classroom_id` sesuai akses pengguna.
+- [x] Kembalikan error validasi dengan status `422`.
 
 File terkait:
 
@@ -44,10 +44,10 @@ File terkait:
 
 ### API-03 — Lindungi akses detail Kurti
 
-- [ ] Fasilitator hanya boleh membuka data murid di kelas aktifnya.
-- [ ] Orang tua hanya boleh membuka data anak yang terhubung dengannya.
-- [ ] Pastikan `groupId` memang memiliki Kurti untuk `muridId` tersebut.
-- [ ] Kembalikan `403` atau `404` untuk akses yang tidak sah.
+- [x] Fasilitator hanya boleh membuka data murid di kelas aktifnya.
+- [x] Orang tua hanya boleh membuka data anak yang terhubung dengannya.
+- [x] Pastikan `groupId` memang memiliki Kurti untuk `muridId` tersebut.
+- [x] Kembalikan `403` atau `404` untuk akses yang tidak sah.
 
 File terkait:
 
@@ -394,19 +394,14 @@ sehingga lint dijalankan langsung melalui binary lokal `node_modules`.
 
 ### QA-02 — Jalankan test backend
 
-- [!] Jalankan seluruh test Laravel.
-- [!] Pastikan test authorization lulus.
-- [!] Pastikan test kontrak respons API lulus.
+- [x] Jalankan seluruh test Laravel.
+- [x] Pastikan test authorization lulus.
+- [x] Pastikan test kontrak respons API lulus.
 - [x] Catat test yang belum dapat dijalankan beserta alasannya.
 
-Catatan: seluruh test backend sudah dijalankan dengan PHP 8.3 setelah cache
-konfigurasi dibersihkan. Hasil saat ini 14 lulus dan 23 gagal. Dua kegagalan
-quality gate API yang masih perlu diselesaikan pada milestone keamanan adalah
-akses detail Kurti anak pengguna lain (mengembalikan 200, seharusnya 403) dan
-validasi item Kurti tanpa `pekan` (mengembalikan 500, seharusnya 422). Kegagalan
-lain berasal dari test web bawaan yang belum menyiapkan field wajib `users.type`
-serta ekspektasi route lama. Karena pekerjaan ini dibatasi hanya Milestone 10,
-perbaikan fitur milestone sebelumnya tidak dilakukan di sini.
+Catatan: seluruh test backend dijalankan dengan PHP 8.3. Hasil akhir 37 test
+lulus dengan 95 assertion, termasuk test authorization, validasi, kontrak API,
+autentikasi web, profil, dan notifikasi.
 
 ### QA-03 — Uji alur orang tua
 
@@ -448,9 +443,9 @@ yang belum tersedia.
 - [!] Uji penggantian `muridId`, `groupId`, dan `kurtiId` secara manual.
 - [!] Pastikan data pengguna lain tidak dapat dibaca atau diubah.
 
-Catatan: pemeriksaan statis lulus dan test backend dapat dijalankan, tetapi dua
-test keamanan API masih gagal seperti dicatat pada QA-02. Pengujian dinamis
-memerlukan aplikasi yang berhasil dimuat, backend aktif, serta akun dan data uji.
+Catatan: pemeriksaan statis dan seluruh test backend lulus. Pengujian dinamis
+tetap memerlukan aplikasi yang berhasil dimuat, backend aktif, serta akun dan
+data uji.
 
 ### RELEASE-01 — Persiapan build
 

@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Classroom;
+
 test('registration screen can be rendered', function () {
     $response = $this->get('/register');
 
@@ -7,9 +9,13 @@ test('registration screen can be rendered', function () {
 });
 
 test('new users can register', function () {
+    $classroom = Classroom::create(['name' => 'Kelas A']);
+
     $response = $this->post('/register', [
         'name' => 'Test User',
         'email' => 'test@example.com',
+        'type' => 'orangtua',
+        'classroom_id' => $classroom->id,
         'password' => 'password',
         'password_confirmation' => 'password',
     ]);

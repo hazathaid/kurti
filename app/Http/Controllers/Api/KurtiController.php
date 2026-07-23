@@ -14,14 +14,30 @@ class KurtiController extends Controller
 {
     public function show($muridId, $groupId)
     {
+        $user = Auth::user();
+        $murid = User::whereKey($muridId)
+            ->where('type', 'murid')
+            ->firstOrFail();
+
+        if ($user->type === 'orangtua') {
+            abort_unless($user->anak()->whereKey($murid->id)->exists(), 403);
+        } elseif ($user->type === 'fasil') {
+            abort_unless(
+                $user->current_classroom_id !== null
+                && (string) $murid->current_classroom_id === (string) $user->current_classroom_id,
+                403
+            );
+        } else {
+            abort(403);
+        }
+
         $group = KurtiGroup::with([
             'kurtis' => function($q) use ($muridId) {
                 $q->where('murid_id', $muridId)->with('murid');
             }
-        ])->findOrFail($groupId);
-
-        $murid = User::findOrFail($muridId);
-        $user  = Auth::user();
+        ])->whereKey($groupId)
+            ->whereHas('kurtis', fn ($query) => $query->where('murid_id', $muridId))
+            ->firstOrFail();
 
         return response()->json([
             'group' => [
@@ -94,75 +110,77 @@ class KurtiController extends Controller
 
         abort_unless($user->type === 'fasil', 403);
 
+        $validated = $request->validate([
+            'murid_id' => ['required', 'integer', 'exists:users,id'],
+            'classroom_id' => ['required', 'integer', 'exists:classrooms,id'],
+            'kurtis' => ['required', 'array', 'min:1'],
+            'kurtis.*.bulan' => ['required', 'date_format:Y-m'],
+            'kurtis.*.pekan' => ['required', 'integer', 'between:1,5'],
+            'kurtis.*.aktivitas' => ['required', 'string', 'max:255'],
+            'kurtis.*.amanah_rumah' => ['nullable', 'string', 'max:255'],
+            'kurtis.*.capaian' => ['nullable', 'string', 'max:255'],
+        ]);
+
         $classroomId = $user->current_classroom_id;
 
         abort_unless(
             $classroomId !== null
-            && (string) $request->input('classroom_id') === (string) $classroomId,
+            && (string) $validated['classroom_id'] === (string) $classroomId,
             403
         );
 
         abort_unless(
-            User::whereKey($request->input('murid_id'))
+            User::whereKey($validated['murid_id'])
                 ->where('type', 'murid')
                 ->where('current_classroom_id', $classroomId)
                 ->exists(),
             403
         );
 
-        $request->validate([
-                'murid_id' => 'required|exists:users,id',
-                'classroom_id' => 'required|exists:classrooms,id',
-                'kurtis'   => 'required|array|min:1',
-                'kurtis.*.aktivitas' => 'required|string|max:255',
-                'kurtis.*.amanah_rumah' => 'nullable|string|max:255',
-                'kurtis.*.capaian' => 'nullable|string|max:255',
-            ]);
+        $saved = DB::transaction(function () use ($validated) {
+            $saved = [];
 
-            $saved = DB::transaction(function () use ($request) {
-                $saved = [];
-
-                foreach ($request->kurtis as $k) {
-                    $group = KurtiGroup::firstOrCreate([
-                        'bulan' => $k['bulan'],
-                        'pekan' => $k['pekan'],
-                    ]);
-                    $saved[] = Kurti::create([
-                        'murid_id'      => $request->murid_id,
-                        'kurti_group_id'=> $group->id,
-                        'aktivitas'     => $k['aktivitas'],
-                        'amanah_rumah'  => $k['amanah_rumah'] ?? null,
-                        'capaian'       => $k['capaian'] ?? null,
-                        'classroom_id'  => $request->classroom_id,
-                        'created_by'    => Auth::id(),
-                    ]);
-                }
-
-                return $saved;
-            });
-
-            $parentIds = User::findOrFail($request->murid_id)
-                ->orangTua()
-                ->pluck('users.id')
-                ->all();
-
-            foreach (collect($saved)->unique('kurti_group_id') as $kurti) {
-                app(NotificationController::class)->sendToUsers(
-                    $parentIds,
-                    'Kurti baru tersedia',
-                    'Aktivitas Kurti baru telah ditambahkan.',
-                    [
-                        'muridId' => $kurti->murid_id,
-                        'groupId' => $kurti->kurti_group_id,
-                    ],
-                );
+            foreach ($validated['kurtis'] as $k) {
+                $group = KurtiGroup::firstOrCreate([
+                    'bulan' => $k['bulan'],
+                    'pekan' => $k['pekan'],
+                ]);
+                $saved[] = Kurti::create([
+                    'murid_id' => $validated['murid_id'],
+                    'kurti_group_id' => $group->id,
+                    'aktivitas' => $k['aktivitas'],
+                    'amanah_rumah' => $k['amanah_rumah'] ?? null,
+                    'capaian' => $k['capaian'] ?? null,
+                    'classroom_id' => $validated['classroom_id'],
+                    'created_by' => Auth::id(),
+                ]);
             }
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Semua kurti berhasil dibuat',
-                'data' => $saved,
-            ]);
+            return $saved;
+        });
+
+        $parentIds = User::findOrFail($validated['murid_id'])
+            ->orangTua()
+            ->pluck('users.id')
+            ->all();
+
+        foreach (collect($saved)->unique('kurti_group_id') as $kurti) {
+            app(NotificationController::class)->sendToUsers(
+                $parentIds,
+                'Kurti baru tersedia',
+                'Aktivitas Kurti baru telah ditambahkan.',
+                [
+                    'muridId' => $kurti->murid_id,
+                    'groupId' => $kurti->kurti_group_id,
+                ],
+            );
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Semua kurti berhasil dibuat',
+            'data' => $saved,
+        ]);
     }
 
 }
