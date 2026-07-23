@@ -111,9 +111,11 @@ Selesai jika semua test terkait lulus.
 - [x] Hapus kode Expo Router setelah dipastikan tidak dipakai.
 - [x] Hapus `src/AppNavigator.js` lama jika tidak dipakai.
 - [x] Hapus `src/screens/DashboardScreen.js` lama jika tidak dipakai.
-- [!] Jalankan aplikasi dan pastikan login serta semua route masih dapat dibuka. (Dependency belum terpasang di workspace.)
+- [!] Jalankan aplikasi dan pastikan login serta semua route masih dapat dibuka.
 
 Catatan: penghapusan file dilakukan hanya setelah penggunaan diperiksa.
+Development build berhasil dipasang pada emulator dan layar login tampil. Semua
+route setelah login masih memerlukan akun serta data uji orang tua/fasilitator.
 
 ### APP-02 — Pusatkan konfigurasi API
 
@@ -290,9 +292,9 @@ File terkait:
 
 Catatan: lint mobile dan seluruh test backend lulus. Test backend mencakup akses
 detail orang tua/fasilitator, penolakan grup yang tidak sesuai, penyimpanan
-catatan, dan persistensi catatan setelah detail dimuat ulang. Emulator tersedia,
-tetapi Expo Go berhenti saat mengunduh update lokal sehingga verifikasi visual
-manual belum dapat dilakukan dari workspace ini.
+catatan, dan persistensi catatan setelah detail dimuat ulang. Development build
+SDK 54 berhasil dipasang dan layar login tampil pada emulator. Verifikasi visual
+detail setelah login masih memerlukan akun dan data uji.
 
 ## Milestone 7 — Pembuatan Kurti
 
@@ -420,9 +422,9 @@ autentikasi web, profil, dan notifikasi.
 - [!] Verifikasi status dashboard berubah.
 - [!] Logout.
 
-Catatan: emulator Android tersedia, tetapi Expo Go gagal mengunduh remote update
-saat smoke test. Alur ini juga memerlukan kredensial dan data uji orang tua yang
-belum tersedia.
+Catatan: development build Android berhasil dipasang dan layar login tampil.
+Alur setelah login memerlukan kredensial dan data uji orang tua yang belum
+tersedia.
 
 ### QA-04 — Uji alur fasilitator
 
@@ -435,9 +437,9 @@ belum tersedia.
 - [!] Verifikasi catatan orang tua bersifat read-only.
 - [!] Logout.
 
-Catatan: emulator Android tersedia, tetapi Expo Go gagal mengunduh remote update
-saat smoke test. Alur ini juga memerlukan kredensial dan data uji fasilitator
-yang belum tersedia.
+Catatan: development build Android berhasil dipasang dan layar login tampil.
+Alur setelah login memerlukan kredensial dan data uji fasilitator yang belum
+tersedia.
 
 ### QA-05 — Uji error dan keamanan
 
@@ -467,7 +469,8 @@ Catatan: icon dan splash masih berupa aset placeholder Expo dan memerlukan aset
 brand final. Konfigurasi web diperbaiki ke output `single` agar proyek React
 Navigation dapat dibundel tanpa Expo Router. Export bundle Android production
 berhasil, tetapi build aplikasi bertanda tangan tetap memerlukan EAS CLI/account;
-instalasi dan smoke test rilis tetap memerlukan perangkat fisik dan akun uji.
+development build SDK 54 juga berhasil dikompilasi dan dipasang pada emulator.
+Smoke test rilis tetap memerlukan perangkat fisik dan akun uji.
 
 ### RELEASE-02 — Version control dan dokumentasi
 
