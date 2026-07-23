@@ -71,6 +71,16 @@ class KurtiController extends Controller
         $kurti->catatan_orang_tua = $validated['catatan_orangtua'];
         $kurti->save();
 
+        app(NotificationController::class)->sendToUsers(
+            [$kurti->created_by],
+            'Catatan orang tua diperbarui',
+            "Catatan untuk {$kurti->murid->name} telah disimpan.",
+            [
+                'muridId' => $kurti->murid_id,
+                'groupId' => $kurti->kurti_group_id,
+            ],
+        );
+
         return response()->json([
             'status' => 'success',
             'data'   => $kurti
@@ -130,6 +140,23 @@ class KurtiController extends Controller
 
                 return $saved;
             });
+
+            $parentIds = User::findOrFail($request->murid_id)
+                ->orangTua()
+                ->pluck('users.id')
+                ->all();
+
+            foreach (collect($saved)->unique('kurti_group_id') as $kurti) {
+                app(NotificationController::class)->sendToUsers(
+                    $parentIds,
+                    'Kurti baru tersedia',
+                    'Aktivitas Kurti baru telah ditambahkan.',
+                    [
+                        'muridId' => $kurti->murid_id,
+                        'groupId' => $kurti->kurti_group_id,
+                    ],
+                );
+            }
 
             return response()->json([
                 'status' => 'success',
