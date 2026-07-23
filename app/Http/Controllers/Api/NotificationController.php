@@ -9,8 +9,10 @@ use Illuminate\Support\Facades\Log;
 
 class NotificationController extends Controller
 {
-    public function sendToUsers(array $userIds, string $title, string $body, array $data): void
+    public function sendToUsers(array $userIds, string $title, string $body, array $data): int
     {
+        $delivered = 0;
+
         try {
             $tokens = UserDevices::query()
                 ->whereIn('user_id', array_unique($userIds))
@@ -31,6 +33,7 @@ class NotificationController extends Controller
 
                 if (! $response->successful()) {
                     Log::warning('Expo push request failed', ['status' => $response->status()]);
+
                     continue;
                 }
 
@@ -38,6 +41,10 @@ class NotificationController extends Controller
                 $tickets = isset($tickets['status']) ? [$tickets] : $tickets;
 
                 foreach ($tickets as $index => $ticket) {
+                    if (($ticket['status'] ?? null) === 'ok') {
+                        $delivered++;
+                    }
+
                     if (($ticket['details']['error'] ?? null) === 'DeviceNotRegistered') {
                         UserDevices::where('fcm_token', $tokenChunk->values()->get($index))->delete();
                     }
@@ -48,5 +55,7 @@ class NotificationController extends Controller
                 'exception' => $exception::class,
             ]);
         }
+
+        return $delivered;
     }
 }

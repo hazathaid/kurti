@@ -511,3 +511,28 @@ Smoke test rilis tetap memerlukan perangkat fisik dan akun uji.
 10. `QA-01` sampai `RELEASE-02`
 
 Notifikasi dapat ditunda sampai sesudah MVP jika waktu terbatas. Security, autentikasi, dashboard, detail, dan pembuatan Kurti tidak boleh ditunda.
+
+## Milestone 11 — Pengingat Harian Kurti
+
+### REMINDER-01 — Scheduler dan pengiriman
+
+- [x] Definisikan periode aktif dari tanggal, bulan, dan pekan.
+- [x] Tambahkan command `kurti:send-reminders`.
+- [x] Jadwalkan command pukul 18:00 `Asia/Jakarta`.
+- [x] Kirim hanya ke orang tua yang terhubung dan memiliki Kurti pending.
+- [x] Simpan deduplikasi per user, murid, group, dan tanggal.
+- [x] Pertahankan `muridId` dan `groupId` pada payload detail.
+- [x] Hindari fallback lokal karena push Expo sudah siap dan fallback akan
+  berisiko menggandakan reminder.
+
+### REMINDER-02 — Pengujian
+
+- [x] Kurti belum diisi mengirim reminder.
+- [x] Kurti selesai tidak mengirim reminder.
+- [x] Pengulangan scheduler pada hari yang sama tidak mengirim dua kali.
+- [x] Kurti pending dapat diingatkan kembali pada hari berikutnya.
+- [x] Payload reminder menunjuk murid dan group detail yang benar.
+- [!] Tekan notifikasi dari kondisi app tertutup memerlukan build/perangkat.
+
+Catatan hasil: seluruh 44 test backend lulus dengan 128 assertion, lint mobile
+lulus, dan scheduler terdaftar pada ekspresi `0 18 * * *`.
