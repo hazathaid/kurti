@@ -399,8 +399,14 @@ sehingga lint dijalankan langsung melalui binary lokal `node_modules`.
 - [!] Pastikan test kontrak respons API lulus.
 - [x] Catat test yang belum dapat dijalankan beserta alasannya.
 
-Catatan: test backend belum dapat dijalankan karena executable `php` tidak
-tersedia di workspace (`php: command not found`).
+Catatan: seluruh test backend sudah dijalankan dengan PHP 8.3 setelah cache
+konfigurasi dibersihkan. Hasil saat ini 14 lulus dan 23 gagal. Dua kegagalan
+quality gate API yang masih perlu diselesaikan pada milestone keamanan adalah
+akses detail Kurti anak pengguna lain (mengembalikan 200, seharusnya 403) dan
+validasi item Kurti tanpa `pekan` (mengembalikan 500, seharusnya 422). Kegagalan
+lain berasal dari test web bawaan yang belum menyiapkan field wajib `users.type`
+serta ekspektasi route lama. Karena pekerjaan ini dibatasi hanya Milestone 10,
+perbaikan fitur milestone sebelumnya tidak dilakukan di sini.
 
 ### QA-03 — Uji alur orang tua
 
@@ -413,8 +419,9 @@ tersedia di workspace (`php: command not found`).
 - [!] Verifikasi status dashboard berubah.
 - [!] Logout.
 
-Catatan: alur orang tua memerlukan backend aktif dan perangkat/emulator yang
-tidak tersedia di workspace ini.
+Catatan: emulator Android tersedia, tetapi Expo Go gagal mengunduh remote update
+saat smoke test. Alur ini juga memerlukan kredensial dan data uji orang tua yang
+belum tersedia.
 
 ### QA-04 — Uji alur fasilitator
 
@@ -427,8 +434,9 @@ tidak tersedia di workspace ini.
 - [!] Verifikasi catatan orang tua bersifat read-only.
 - [!] Logout.
 
-Catatan: alur fasilitator memerlukan backend aktif dan perangkat/emulator yang
-tidak tersedia di workspace ini.
+Catatan: emulator Android tersedia, tetapi Expo Go gagal mengunduh remote update
+saat smoke test. Alur ini juga memerlukan kredensial dan data uji fasilitator
+yang belum tersedia.
 
 ### QA-05 — Uji error dan keamanan
 
@@ -440,9 +448,9 @@ tidak tersedia di workspace ini.
 - [!] Uji penggantian `muridId`, `groupId`, dan `kurtiId` secara manual.
 - [!] Pastikan data pengguna lain tidak dapat dibaca atau diubah.
 
-Catatan: pengujian error dan keamanan dinamis memerlukan backend aktif, data
-uji, dan perangkat/emulator. Test otomatis backend juga terhambat oleh PHP yang
-tidak tersedia.
+Catatan: pemeriksaan statis lulus dan test backend dapat dijalankan, tetapi dua
+test keamanan API masih gagal seperti dicatat pada QA-02. Pengujian dinamis
+memerlukan aplikasi yang berhasil dimuat, backend aktif, serta akun dan data uji.
 
 ### RELEASE-01 — Persiapan build
 
@@ -455,8 +463,10 @@ tidak tersedia.
 - [!] Jalankan smoke test login sampai penyimpanan catatan.
 
 Catatan: icon dan splash masih berupa aset placeholder Expo dan memerlukan aset
-brand final. Build production memerlukan EAS CLI/account, lalu instalasi dan
-smoke test memerlukan perangkat fisik.
+brand final. Konfigurasi web diperbaiki ke output `single` agar proyek React
+Navigation dapat dibundel tanpa Expo Router. Export bundle Android production
+berhasil, tetapi build aplikasi bertanda tangan tetap memerlukan EAS CLI/account;
+instalasi dan smoke test rilis tetap memerlukan perangkat fisik dan akun uji.
 
 ### RELEASE-02 — Version control dan dokumentasi
 
