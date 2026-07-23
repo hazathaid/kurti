@@ -258,35 +258,41 @@ File terkait:
 
 ### DETAIL-01 — Migrasikan request ke API client
 
-- [ ] Gunakan API client untuk mengambil detail.
-- [ ] Gunakan API client untuk menyimpan catatan.
-- [ ] Hapus akses token langsung dari `AsyncStorage` pada screen.
-- [ ] Hapus import `axios` langsung pada screen.
+- [x] Gunakan API client untuk mengambil detail.
+- [x] Gunakan API client untuk menyimpan catatan.
+- [x] Hapus akses token langsung dari `AsyncStorage` pada screen.
+- [x] Hapus import `axios` langsung pada screen.
 
 ### DETAIL-02 — Lengkapi state detail
 
-- [ ] Tambahkan loading state.
-- [ ] Tambahkan empty state.
-- [ ] Tambahkan error state dan retry.
-- [ ] Tangani status `403` dan `404`.
-- [ ] Reset state saat `muridId` atau `groupId` berubah.
+- [x] Tambahkan loading state.
+- [x] Tambahkan empty state.
+- [x] Tambahkan error state dan retry.
+- [x] Tangani status `403` dan `404`.
+- [x] Reset state saat `muridId` atau `groupId` berubah.
 
 ### DETAIL-03 — Benahi editor catatan orang tua
 
-- [ ] Fasilitator hanya melihat catatan sebagai teks.
-- [ ] Orang tua dapat mengedit catatan.
-- [ ] Simpan loading per item.
-- [ ] Cegah pengiriman ganda.
-- [ ] Pertahankan teks ketika request gagal.
-- [ ] Perbarui data lokal setelah server berhasil menyimpan.
-- [ ] Pastikan catatan tetap ada setelah detail dimuat ulang.
+- [x] Fasilitator hanya melihat catatan sebagai teks.
+- [x] Orang tua dapat mengedit catatan.
+- [x] Simpan loading per item.
+- [x] Cegah pengiriman ganda.
+- [x] Pertahankan teks ketika request gagal.
+- [x] Perbarui data lokal setelah server berhasil menyimpan.
+- [x] Pastikan catatan tetap ada setelah detail dimuat ulang.
 
 ### DETAIL-04 — Rapikan accordion aktivitas
 
-- [ ] Pastikan hanya accordion yang dipilih yang terbuka.
-- [ ] Gunakan ID Kurti sebagai state expanded, bukan index array.
-- [ ] Tampilkan fallback `-` untuk nilai kosong.
-- [ ] Pastikan daftar panjang dapat di-scroll dengan baik.
+- [x] Pastikan hanya accordion yang dipilih yang terbuka.
+- [x] Gunakan ID Kurti sebagai state expanded, bukan index array.
+- [x] Tampilkan fallback `-` untuk nilai kosong.
+- [x] Pastikan daftar panjang dapat di-scroll dengan baik.
+
+Catatan: lint mobile dan seluruh test backend lulus. Test backend mencakup akses
+detail orang tua/fasilitator, penolakan grup yang tidak sesuai, penyimpanan
+catatan, dan persistensi catatan setelah detail dimuat ulang. Emulator tersedia,
+tetapi Expo Go berhenti saat mengunduh update lokal sehingga verifikasi visual
+manual belum dapat dilakukan dari workspace ini.
 
 ## Milestone 7 — Pembuatan Kurti
 

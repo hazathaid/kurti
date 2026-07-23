@@ -103,6 +103,49 @@ test('parent cannot update another parents child kurti', function () {
     expect($kurti->fresh()->catatan_orang_tua)->toBeNull();
 });
 
+test('parent can read linked child detail and saved note persists after reload', function () {
+    $classroom = Classroom::create(['name' => 'Kelas A']);
+    $facilitator = apiUser('fasil', ['current_classroom_id' => $classroom->id]);
+    $parent = apiUser('orangtua');
+    $child = apiUser('murid', ['current_classroom_id' => $classroom->id]);
+    $parent->anak()->attach($child->id);
+    $kurti = apiKurti($child, $classroom, $facilitator);
+    Sanctum::actingAs($parent);
+
+    $this->getJson("/api/kurtis/{$child->id}/{$kurti->kurti_group_id}")
+        ->assertOk()
+        ->assertJsonPath('group.kurtis.0.id', $kurti->id)
+        ->assertJsonPath('group.kurtis.0.catatan_orangtua', null);
+
+    $this->putJson("/api/kurtis/{$kurti->id}/catatan", [
+        'catatan_orangtua' => 'Sudah dipraktikkan di rumah',
+    ])->assertOk()
+        ->assertJsonPath('data.catatan_orang_tua', 'Sudah dipraktikkan di rumah');
+
+    $this->getJson("/api/kurtis/{$child->id}/{$kurti->kurti_group_id}")
+        ->assertOk()
+        ->assertJsonPath(
+            'group.kurtis.0.catatan_orangtua',
+            'Sudah dipraktikkan di rumah'
+        );
+});
+
+test('facilitator can read active classroom detail but not a mismatched group', function () {
+    $classroom = Classroom::create(['name' => 'Kelas A']);
+    $facilitator = apiUser('fasil', ['current_classroom_id' => $classroom->id]);
+    $child = apiUser('murid', ['current_classroom_id' => $classroom->id]);
+    $kurti = apiKurti($child, $classroom, $facilitator);
+    $unrelatedGroup = KurtiGroup::create(['bulan' => '2026-08', 'pekan' => 2]);
+    Sanctum::actingAs($facilitator);
+
+    $this->getJson("/api/kurtis/{$child->id}/{$kurti->kurti_group_id}")
+        ->assertOk()
+        ->assertJsonPath('group.kurtis.0.id', $kurti->id);
+
+    $this->getJson("/api/kurtis/{$child->id}/{$unrelatedGroup->id}")
+        ->assertNotFound();
+});
+
 test('facilitator cannot create kurti for another classroom', function () {
     $ownClassroom = Classroom::create(['name' => 'Kelas A']);
     $otherClassroom = Classroom::create(['name' => 'Kelas B']);

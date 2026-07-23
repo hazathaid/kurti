@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { List } from "react-native-paper";
 import api from "../api/client";
-import { getApiErrorMessage } from "../api/errors";
+import { getApiError, getApiErrorMessage } from "../api/errors";
 import { EmptyState, ErrorState, LoadingState } from "../components/StateViews";
 import { AuthContext } from "../contexts/AuthContext";
 import { colors, minimumTouchSize, radius, spacing } from "../theme/tokens";
@@ -23,58 +23,98 @@ const DetailKurtiScreen = ({ route }) => {
 
   const [kurtiData, setKurtiData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [expanded, setExpanded] = useState(false);
+  const [expandedId, setExpandedId] = useState(null);
   const [groupInfo, setGroupInfo] = useState(null);
   const [muridInfo, setMuridInfo] = useState(null);
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const [savingId, setSavingId] = useState(null); // untuk track kurti mana yg disave
-  const [catatanMap, setCatatanMap] = useState({}); // simpan catatan per kurti
+  const [loadError, setLoadError] = useState(null);
+  const [savingIds, setSavingIds] = useState({});
+  const [catatanMap, setCatatanMap] = useState({});
+  const requestIdRef = useRef(0);
 
   const fetchKurtiDetail = useCallback(async () => {
+    const requestId = ++requestIdRef.current;
     setLoading(true);
-    setErrorMessage("");
+    setLoadError(null);
+
     try {
       const response = await api.get(`/kurtis/${muridId}/${groupId}`);
+      if (requestId !== requestIdRef.current) return;
+
       const json = response.data;
 
       if (json.group) {
-        setKurtiData(json.group.kurtis || []);
+        const kurtis = json.group.kurtis || [];
+        setKurtiData(kurtis);
         setGroupInfo({ bulan: json.group.bulan, pekan: json.group.pekan });
         setMuridInfo(json.murid);
 
-        // isi catatan awal ke map
         const initialCatatan = {};
-        (json.group.kurtis || []).forEach((k) => {
+        kurtis.forEach((k) => {
           initialCatatan[k.id] = k.catatan_orangtua || "";
         });
         setCatatanMap(initialCatatan);
       } else {
-        setErrorMessage("Data grup tidak ditemukan.");
+        setLoadError({
+          type: "notFound",
+          message: "Data grup tidak ditemukan.",
+        });
       }
     } catch (error) {
-      setErrorMessage(getApiErrorMessage(error));
+      if (requestId === requestIdRef.current) {
+        setLoadError(getApiError(error));
+      }
     } finally {
-      setLoading(false);
+      if (requestId === requestIdRef.current) {
+        setLoading(false);
+      }
     }
   }, [groupId, muridId]);
 
   useEffect(() => {
+    setKurtiData([]);
+    setGroupInfo(null);
+    setMuridInfo(null);
+    setCatatanMap({});
+    setSavingIds({});
+    setExpandedId(null);
+    setLoadError(null);
     fetchKurtiDetail();
+
+    return () => {
+      requestIdRef.current += 1;
+    };
   }, [fetchKurtiDetail]);
 
   const handleSave = async (kurtiId) => {
+    if (savingIds[kurtiId]) return;
+
+    const draft = catatanMap[kurtiId] ?? "";
+    setSavingIds((current) => ({ ...current, [kurtiId]: true }));
+
     try {
-      setSavingId(kurtiId);
-      await api.put(`/kurtis/${kurtiId}/catatan`, {
-        catatan_orangtua: catatanMap[kurtiId],
+      const response = await api.put(`/kurtis/${kurtiId}/catatan`, {
+        catatan_orangtua: draft,
       });
+      const savedNote = response.data?.data?.catatan_orang_tua ?? draft;
+
+      setCatatanMap((current) => ({ ...current, [kurtiId]: savedNote }));
+      setKurtiData((current) =>
+        current.map((kurti) =>
+          kurti.id === kurtiId
+            ? { ...kurti, catatan_orangtua: savedNote }
+            : kurti,
+        ),
+      );
 
       Alert.alert("Berhasil", "Catatan orang tua berhasil disimpan");
     } catch (error) {
       Alert.alert("Error", getApiErrorMessage(error));
     } finally {
-      setSavingId(null);
+      setSavingIds((current) => {
+        const next = { ...current };
+        delete next[kurtiId];
+        return next;
+      });
     }
   };
 
@@ -82,77 +122,103 @@ const DetailKurtiScreen = ({ route }) => {
     return <LoadingState message="Memuat detail Kurti..." fullScreen />;
   }
 
-  if (errorMessage) {
-    return <ErrorState title="Detail belum dapat dimuat" message={errorMessage} onRetry={fetchKurtiDetail} />;
+  if (loadError) {
+    const title =
+      loadError.type === "forbidden"
+        ? "Akses detail ditolak"
+        : loadError.type === "notFound"
+          ? "Detail tidak ditemukan"
+          : "Detail belum dapat dimuat";
+
+    return (
+      <ErrorState
+        title={title}
+        message={loadError.message}
+        onRetry={fetchKurtiDetail}
+      />
+    );
   }
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : undefined}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-      {muridInfo && (
-        <Text style={styles.header}>
-          {muridInfo.name} - Bulan {groupInfo?.bulan}, Pekan {groupInfo?.pekan}
-        </Text>
-      )}
+        {muridInfo && (
+          <Text style={styles.header}>
+            {muridInfo.name} - Bulan {groupInfo?.bulan}, Pekan {groupInfo?.pekan}
+          </Text>
+        )}
 
-      {kurtiData.length === 0 ? (
-        <EmptyState title="Belum ada data Kurti" description="Aktivitas untuk periode ini belum tersedia." />
-      ) : (
-        <List.Section>
-          {kurtiData.map((kurti, index) => (
-            <List.Accordion
-              key={`kurti-${kurti.id}`}
-              title={`Aktivitas: ${kurti.aktivitas}`}
-              left={(props) => <List.Icon {...props} icon="book" />}
-              expanded={expanded === index}
-              onPress={() => setExpanded(expanded === index ? false : index)}
-              accessibilityLabel={`Buka detail aktivitas ${kurti.aktivitas}`}
-            >
-              <View style={styles.detailBox}>
-                <Text style={styles.label}>Amanah Rumah:</Text>
-                <Text>{kurti.amanah_rumah || "-"}</Text>
+        {kurtiData.length === 0 ? (
+          <EmptyState title="Belum ada data Kurti" description="Aktivitas untuk periode ini belum tersedia." />
+        ) : (
+          <List.Section>
+            {kurtiData.map((kurti) => {
+              const isSaving = Boolean(savingIds[kurti.id]);
+              const activityLabel = kurti.aktivitas || "-";
 
-                <Text style={styles.label}>Capaian:</Text>
-                <Text>{kurti.capaian || "-"}</Text>
+              return (
+                <List.Accordion
+                  key={`kurti-${kurti.id}`}
+                  title={`Aktivitas: ${activityLabel}`}
+                  left={(props) => <List.Icon {...props} icon="book" />}
+                  expanded={expandedId === kurti.id}
+                  onPress={() =>
+                    setExpandedId((current) =>
+                      current === kurti.id ? null : kurti.id,
+                    )
+                  }
+                  accessibilityLabel={`Buka detail aktivitas ${activityLabel}`}
+                >
+                  <View style={styles.detailBox}>
+                    <Text style={styles.label}>Amanah Rumah:</Text>
+                    <Text>{kurti.amanah_rumah || "-"}</Text>
 
-                <Text style={styles.label}>Catatan Orang Tua:</Text>
-                {user?.type === "fasil" ? (
-                  <Text style={styles.readonly}>
-                    {kurti.catatan_orangtua ?? "-"}
-                  </Text>
-                ) : (
-                  <TextInput
-                    style={styles.input}
-                    value={catatanMap[kurti.id]}
-                    onChangeText={(text) =>
-                      setCatatanMap((prev) => ({ ...prev, [kurti.id]: text }))
-                    }
-                    placeholder="Masukkan catatan orang tua"
-                    multiline
-                  />
-                )}
+                    <Text style={styles.label}>Capaian:</Text>
+                    <Text>{kurti.capaian || "-"}</Text>
 
-                {user?.type === "orangtua" && (
-                  <TouchableOpacity
-                    style={[
-                      styles.button,
-                      savingId === kurti.id && { backgroundColor: "#ccc" },
-                    ]}
-                    onPress={() => handleSave(kurti.id)}
-                    disabled={savingId === kurti.id}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Simpan catatan untuk aktivitas ${kurti.aktivitas}`}
-                  >
-                    <Text style={styles.buttonText}>
-                      {savingId === kurti.id ? "Menyimpan..." : "Simpan"}
-                    </Text>
-                  </TouchableOpacity>
-                )}
-              </View>
-            </List.Accordion>
-          ))}
-        </List.Section>
-      )}
+                    <Text style={styles.label}>Catatan Orang Tua:</Text>
+                    {user?.type !== "orangtua" ? (
+                      <Text style={styles.readonly}>
+                        {kurti.catatan_orangtua || "-"}
+                      </Text>
+                    ) : (
+                      <TextInput
+                        style={styles.input}
+                        value={catatanMap[kurti.id] ?? ""}
+                        onChangeText={(text) =>
+                          setCatatanMap((current) => ({
+                            ...current,
+                            [kurti.id]: text,
+                          }))
+                        }
+                        placeholder="Masukkan catatan orang tua"
+                        maxLength={255}
+                        multiline
+                        editable={!isSaving}
+                        accessibilityLabel={`Catatan orang tua untuk aktivitas ${activityLabel}`}
+                      />
+                    )}
+
+                    {user?.type === "orangtua" && (
+                      <TouchableOpacity
+                        style={[styles.button, isSaving && styles.buttonDisabled]}
+                        onPress={() => handleSave(kurti.id)}
+                        disabled={isSaving}
+                        accessibilityRole="button"
+                        accessibilityState={{ disabled: isSaving, busy: isSaving }}
+                        accessibilityLabel={`Simpan catatan untuk aktivitas ${activityLabel}`}
+                      >
+                        <Text style={styles.buttonText}>
+                          {isSaving ? "Menyimpan..." : "Simpan"}
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                </List.Accordion>
+              );
+            })}
+          </List.Section>
+        )}
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -187,6 +253,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 12,
   },
+  buttonDisabled: { backgroundColor: colors.border },
   buttonText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
 });
 
