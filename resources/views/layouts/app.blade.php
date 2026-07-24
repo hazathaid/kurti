@@ -23,6 +23,12 @@
                class="bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded-lg text-sm">
                 Bukom
             </a>
+            @if(in_array(Auth::user()->type, ['fasil', 'orangtua']))
+                <a href="{{ route('weekly-reports.index') }}"
+                   class="bg-emerald-500 hover:bg-emerald-600 px-3 py-1 rounded-lg text-sm">
+                    Weekly Report
+                </a>
+            @endif
         </div>
 
         <div class="flex items-center gap-4">
