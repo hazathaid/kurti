@@ -1,22 +1,29 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow">
-    <h2 class="text-xl font-bold mb-4">Edit Data Kurti</h2>
+<div class="mx-auto max-w-3xl py-4 sm:py-8">
+    <a href="{{ route('dashboard') }}" class="mb-4 inline-flex text-sm font-semibold text-slate-600 hover:text-emerald-700">← Kembali</a>
+    <div class="page-header">
+        <div>
+            <p class="page-eyebrow">Perbarui Aktivitas</p>
+            <h1 class="page-title">Edit Data Kurti</h1>
+            <p class="page-description">Sesuaikan informasi aktivitas dan capaian murid.</p>
+        </div>
+    </div>
 
-    <form method="POST" action="{{ route('kurtis.update', $kurti->id) }}">
+    <form method="POST" action="{{ route('kurtis.update', $kurti->id) }}" class="surface p-5 sm:p-7">
         @csrf
         @method('PUT')
 
         <div class="space-y-4">
             <div>
-                <label class="block text-sm font-medium text-gray-700">Bulan</label>
+                <label class="field-label">Bulan</label>
                 <input type="month" name="bulan" value="{{ old('bulan', $kurti->group->bulan) }}"
-                       class="w-full border-gray-300 rounded-lg">
+                       class="field-control">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700">Pekan</label>
-                <select name="pekan" class="w-full border-gray-300 rounded-lg">
+                <label class="field-label">Pekan</label>
+                <select name="pekan" class="field-control">
                     <option value="1" {{ old('pekan', $kurti->group->pekan) == 1 ? 'selected' : '' }}>Pekan 1</option>
                     <option value="2" {{ old('pekan', $kurti->group->pekan) == 2 ? 'selected' : '' }}>Pekan 2</option>
                     <option value="3" {{ old('pekan', $kurti->group->pekan) == 3 ? 'selected' : '' }}>Pekan 3</option>
@@ -24,29 +31,29 @@
                 </select>
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700">Aktivitas</label>
-                <textarea name="aktivitas" class="w-full border-gray-300 rounded-lg">{{ old('aktivitas', $kurti->aktivitas) }}</textarea>
+                <label class="field-label">Aktivitas</label>
+                <textarea name="aktivitas" rows="4" class="field-control">{{ old('aktivitas', $kurti->aktivitas) }}</textarea>
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700">Amanah Rumah</label>
-                <textarea name="amanah_rumah" class="w-full border-gray-300 rounded-lg">{{ old('amanah_rumah', $kurti->amanah_rumah) }}</textarea>
+                <label class="field-label">Amanah Rumah</label>
+                <textarea name="amanah_rumah" rows="4" class="field-control">{{ old('amanah_rumah', $kurti->amanah_rumah) }}</textarea>
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700">Capaian</label>
-                <textarea name="capaian" class="w-full border-gray-300 rounded-lg">{{ old('capaian', $kurti->capaian) }}</textarea>               <!-- Changed from input to textarea -->
+                <label class="field-label">Capaian</label>
+                <textarea name="capaian" rows="4" class="field-control">{{ old('capaian', $kurti->capaian) }}</textarea>
             </div>
         </div>
 
-        <div class="mt-6">
+        <div class="mt-6 flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
             <a href="{{ route('dashboard') }}"
-               class="mr-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+               class="btn-secondary">
                 Batal
             </a>
             <button type="submit"
-                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                Update
+                    class="btn-primary">
+                Simpan Perubahan
             </button>
         </div>
     </form>

@@ -1,56 +1,20 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Lupa Password - Kurti SAI</title>
-  <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96" />
-  <link rel="icon" type="image/svg+xml" href="/icon/favicon.svg" />
-  <link rel="shortcut icon" href="/icon/favicon.ico" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/icon/apple-touch-icon.png" />
-  <meta name="apple-mobile-web-app-title" content="Kurti SAIS" />
-  <link rel="manifest" href="/icon/site.webmanifest" />
-  @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="min-h-screen bg-gray-900 flex items-center justify-center px-4">
-  <div class="w-full max-w-md bg-gray-800 rounded-2xl shadow-lg p-6">
-    <h1 class="text-2xl font-bold text-white mb-1">Lupa Password</h1>
-    <p class="text-sm text-gray-400 mb-6">
-      Masukkan alamat email kamu, link reset password akan dikirimkan.
-    </p>
-
-    {{-- Status pesan sukses (misalnya "link terkirim") --}}
-    @if (session('status'))
-      <div class="mb-4 text-sm text-green-400">
-        {{ session('status') }}
-      </div>
-    @endif
-
-    <form method="POST" action="{{ route('password.email') }}" class="space-y-4">
-      @csrf
-
-      {{-- Email --}}
-      <div>
-        <label for="email" class="block text-sm text-gray-300 mb-1">Email</label>
-        <input id="email" name="email" type="email" value="{{ old('email') }}" required autofocus
-               class="w-full rounded-lg border border-gray-600 bg-gray-900 px-3 py-2 text-white placeholder-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-        @error('email')
-          <p class="mt-1 text-xs text-red-400">{{ $message }}</p>
-        @enderror
-      </div>
-
-      {{-- Tombol submit --}}
-      <button type="submit"
-              class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 rounded-lg shadow-md transition">
-        Kirim Link Reset
-      </button>
-    </form>
-
-    <div class="mt-6 text-center">
-      <a href="{{ route('login') }}" class="text-sm text-indigo-400 hover:underline">
-        Kembali ke Login
-      </a>
+<x-guest-layout>
+    <div class="mb-7">
+        <p class="page-eyebrow">Pemulihan Akun</p>
+        <h1 class="mt-1 text-2xl font-bold text-slate-950">Lupa Password</h1>
+        <p class="mt-2 text-sm leading-6 text-slate-500">Masukkan email akun. Kami akan mengirimkan tautan untuk membuat password baru.</p>
     </div>
-  </div>
-</body>
-</html>
+    @if (session('status'))
+        <div class="mb-5 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm font-medium text-emerald-700">{{ session('status') }}</div>
+    @endif
+    <form method="POST" action="{{ route('password.email') }}" class="space-y-5">
+        @csrf
+        <div>
+            <label for="email" class="field-label">Email</label>
+            <input id="email" name="email" type="email" value="{{ old('email') }}" required autofocus class="auth-field" placeholder="nama@email.com">
+            @error('email') <p class="field-error">{{ $message }}</p> @enderror
+        </div>
+        <button type="submit" class="btn-primary w-full py-3">Kirim Link Reset</button>
+    </form>
+    <div class="mt-6 text-center"><a href="{{ route('login') }}" class="text-sm font-semibold text-emerald-700 hover:underline">← Kembali ke login</a></div>
+</x-guest-layout>

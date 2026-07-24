@@ -1,49 +1,56 @@
 @extends('layouts.app')
 @section('content')
-    <div class="max-w-10xl mx-auto p-6 bg-white rounded-lg shadow">
-        <h2 class="text-xl font-bold mb-4">Tambah Data Kurti - {{ $murid->name }}</h2>
+    <div class="page-shell">
+        <a href="{{ route('dashboard') }}" class="mb-4 inline-flex text-sm font-semibold text-slate-600 hover:text-emerald-700">← Kembali</a>
+        <div class="page-header">
+            <div>
+                <p class="page-eyebrow">Aktivitas Baru</p>
+                <h1 class="page-title">Tambah Kurti — {{ $murid->name }}</h1>
+                <p class="page-description">Tambahkan satu atau beberapa aktivitas dalam satu kali penyimpanan.</p>
+            </div>
+        </div>
 
-        <form method="POST" action="{{ route('kurtis.store') }}">
+        <form method="POST" action="{{ route('kurtis.store') }}" class="surface p-4 sm:p-6">
             @csrf
             <input type="hidden" name="murid_id" value="{{ $murid->id }}">
             <input type="hidden" name="classroom_id" value="{{ $murid->first_classroom->id }}">
 
-            <div class="overflow-x-auto">
-                <table class="min-w-full border border-gray-300 rounded-lg">
-                    <thead class="bg-gray-100">
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
                         <tr>
-                            <th class="border px-3 py-2 text-left">Bulan</th>
-                            <th class="border px-3 py-2 text-left">Pekan</th>
-                            <th class="border px-3 py-2 text-left">Aktivitas</th>
-                            <th class="border px-3 py-2 text-left">Amanah Rumah</th>
-                            <th class="border px-3 py-2 text-left">Capaian</th>
-                            <th class="border px-3 py-2 text-left">Aksi</th>
+                            <th>Bulan</th>
+                            <th>Pekan</th>
+                            <th>Aktivitas</th>
+                            <th>Amanah Rumah</th>
+                            <th>Capaian</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="rows-container">
                         <tr>
-                            <td class="border px-3 py-2">
-                                <input type="month" name="kurtis[0][bulan]" class="w-full border-gray-300 rounded-lg">
+                            <td class="min-w-44">
+                                <input type="month" name="kurtis[0][bulan]" class="field-control">
                             </td>
-                            <td class="border px-3 py-2">
-                                <select name="kurtis[0][pekan]" class="w-full border-gray-300 rounded-lg">
+                            <td class="min-w-36">
+                                <select name="kurtis[0][pekan]" class="field-control">
                                     <option value="1">Pekan 1</option>
                                     <option value="2">Pekan 2</option>
                                     <option value="3">Pekan 3</option>
                                     <option value="4">Pekan 4</option>
                                 </select>
                             </td>
-                            <td class="border px-3 py-2">
-                                <textarea name="kurtis[0][aktivitas]" class="w-full border-gray-300 rounded-lg resize-none" oninput="this.style.height='auto'; this.style.height=this.scrollHeight+'px'"></textarea>
+                            <td class="min-w-64">
+                                <textarea name="kurtis[0][aktivitas]" class="field-control min-h-24 resize-none" placeholder="Aktivitas murid" oninput="this.style.height='auto'; this.style.height=this.scrollHeight+'px'"></textarea>
                             </td>
-                            <td class="border px-3 py-2">
-                                <textarea name="kurtis[0][amanah_rumah]" class="w-full border-gray-300 rounded-lg resize-none" oninput="this.style.height='auto'; this.style.height=this.scrollHeight+'px'"></textarea>
+                            <td class="min-w-64">
+                                <textarea name="kurtis[0][amanah_rumah]" class="field-control min-h-24 resize-none" placeholder="Tindak lanjut di rumah" oninput="this.style.height='auto'; this.style.height=this.scrollHeight+'px'"></textarea>
                             </td>
-                            <td class="border px-3 py-2">
-                                <textarea name="kurtis[0][capaian]" class="w-full border-gray-300 rounded-lg resize-none" oninput="this.style.height='auto'; this.style.height=this.scrollHeight+'px'"></textarea>
+                            <td class="min-w-64">
+                                <textarea name="kurtis[0][capaian]" class="field-control min-h-24 resize-none" placeholder="Capaian murid" oninput="this.style.height='auto'; this.style.height=this.scrollHeight+'px'"></textarea>
                             </td>
-                            <td class="border px-3 py-2 text-center">
-                                <button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700">Hapus</button>
+                            <td class="text-center">
+                                <button type="button" onclick="removeRow(this)" class="text-sm font-semibold text-rose-600 hover:underline">Hapus</button>
                             </td>
                         </tr>
                     </tbody>
@@ -52,20 +59,20 @@
 
             <div class="mt-4">
                 <button type="button" onclick="addRow()"
-                        class="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                        class="btn-secondary">
                     + Tambah Baris
                 </button>
             </div>
 
-            <div class="mt-6">
+            <div class="mt-6 flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
                 <a href="{{ route('dashboard') }}"
-                class="mr-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+                class="btn-secondary">
                     Batal
                 </a>
 
                 <button type="submit"
-                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                    Simpan
+                        class="btn-primary">
+                    Simpan Aktivitas
                 </button>
             </div>
         </form>
@@ -78,28 +85,28 @@
             const container = document.getElementById('rows-container');
             const newRow = `
                 <tr>
-                    <td class="border px-3 py-2">
-                        <input type="month" name="kurtis[${rowIndex}][bulan]" class="w-full border-gray-300 rounded-lg">
+                    <td class="min-w-44">
+                        <input type="month" name="kurtis[${rowIndex}][bulan]" class="field-control">
                     </td>
-                    <td class="border px-3 py-2">
-                        <select name="kurtis[${rowIndex}][pekan]" class="w-full border-gray-300 rounded-lg">
+                    <td class="min-w-36">
+                        <select name="kurtis[${rowIndex}][pekan]" class="field-control">
                             <option value="1">Pekan 1</option>
                             <option value="2">Pekan 2</option>
                             <option value="3">Pekan 3</option>
                             <option value="4">Pekan 4</option>
                         </select>
                     </td>
-                    <td class="border px-3 py-2">
-                        <textarea name="kurtis[${rowIndex}][aktivitas]" class="w-full border-gray-300 rounded-lg"></textarea>
+                    <td class="min-w-64">
+                        <textarea name="kurtis[${rowIndex}][aktivitas]" class="field-control min-h-24" placeholder="Aktivitas murid"></textarea>
                     </td>
-                    <td class="border px-3 py-2">
-                        <textarea name="kurtis[${rowIndex}][amanah_rumah]" class="w-full border-gray-300 rounded-lg"></textarea>
+                    <td class="min-w-64">
+                        <textarea name="kurtis[${rowIndex}][amanah_rumah]" class="field-control min-h-24" placeholder="Tindak lanjut di rumah"></textarea>
                     </td>
-                    <td class="border px-3 py-2">
-                        <textarea name="kurtis[${rowIndex}][capaian]" class="w-full border-gray-300 rounded-lg"></textarea>
+                    <td class="min-w-64">
+                        <textarea name="kurtis[${rowIndex}][capaian]" class="field-control min-h-24" placeholder="Capaian murid"></textarea>
                     </td>
-                    <td class="border px-3 py-2 text-center">
-                        <button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700">Hapus</button>
+                    <td class="text-center">
+                        <button type="button" onclick="removeRow(this)" class="text-sm font-semibold text-rose-600 hover:underline">Hapus</button>
                     </td>
                 </tr>
             `;

@@ -1,10 +1,15 @@
 <x-guest-layout>
+    <div class="mb-7">
+        <p class="page-eyebrow">Akun Baru</p>
+        <h1 class="mt-1 text-2xl font-bold text-slate-950">Daftar Kurti SAI</h1>
+        <p class="mt-2 text-sm leading-6 text-slate-500">Lengkapi informasi berikut untuk membuat akun.</p>
+    </div>
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
         <!-- Name -->
         <div>
-            <x-input-label for="name" :value="__('Name')" />
+            <x-input-label for="name" value="Nama" />
             <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
@@ -17,15 +22,15 @@
         </div>
 
         <div class="mt-4">
-            <x-input-label for="type" :value="__('Type')" />
+            <x-input-label for="type" value="Peran" />
             <select id="type" name="type"
-                class="block mt-1 w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                <option value="">-- Pilih Type --</option>
+                class="field-control mt-1">
+                <option value="">Pilih peran</option>
                 <option value="orang_tua">
                     Orang Tua
                 </option>
                 <option value="murid">
-                    Parent
+                    Murid
                 </option>
                 <option value="fasil">
                     Fasil
@@ -35,10 +40,10 @@
 
         </div>
         <div class="mt-4">
-            <x-input-label for="class" :value="__('Class Room')" />
+            <x-input-label for="class" value="Kelas" />
             <select id="classroom_id" name="classroom_id"
-                class="block mt-1 w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                <option value="">-- Pilih Classroom --</option>
+                class="field-control mt-1">
+                <option value="">Pilih kelas</option>
                     @foreach($classrooms as $classroom)
                         <option value="{{ $classroom->id }}"
                             {{ old('classroom_id') == $classroom->id ? 'selected' : '' }}>
@@ -73,13 +78,13 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
+        <div class="mt-6 flex flex-col-reverse items-center gap-3 sm:flex-row sm:justify-between">
+            <a class="text-sm font-semibold text-emerald-700 hover:underline" href="{{ route('login') }}">
+                Sudah punya akun?
             </a>
 
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
+            <x-primary-button class="w-full sm:w-auto">
+                Daftar
             </x-primary-button>
         </div>
     </form>

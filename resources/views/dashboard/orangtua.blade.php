@@ -1,30 +1,44 @@
 @extends('layouts.app')
 @section('content')
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-6">
-        <h2 class="text-2xl font-bold mb-6">Dashboard Orang Tua</h2>
+    <div class="page-shell">
+        <div class="page-header">
+            <div>
+                <p class="page-eyebrow">Pendampingan di Rumah</p>
+                <h1 class="page-title">Dashboard Orang Tua</h1>
+                <p class="page-description">Ikuti aktivitas, capaian, dan amanah rumah anak dari waktu ke waktu.</p>
+            </div>
+        </div>
 
-        @foreach($kurtis as $muridName => $bulanList)
-        <div class="bg-white shadow-md rounded-xl p-6 mb-6">
-            <h3 class="text-xl font-semibold text-gray-700 mb-4">{{ $muridName }}</h3>
+        @forelse($kurtis as $muridName => $bulanList)
+        <section class="surface mb-6 overflow-hidden">
+            <div class="surface-header">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-700">{{ mb_substr($muridName, 0, 1) }}</div>
+                    <h2 class="text-xl font-bold text-slate-900">{{ $muridName }}</h2>
+                </div>
+            </div>
+            <div class="surface-body space-y-6">
 
             @foreach($bulanList as $bulan => $pekanList)
-                <h4 class="text-lg font-medium text-gray-600 mb-2">Bulan: {{ $bulan }}</h4>
+                <div>
+                <h3 class="mb-2 text-sm font-bold text-slate-700">{{ $bulan }}</h3>
 
-                <table class="min-w-full divide-y divide-gray-200 mb-4">
+                <div class="table-wrap">
+                <table class="data-table">
                     <thead>
-                        <tr class="bg-gray-100">
-                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Pekan</th>
-                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Status</th>
-                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Aksi</th>
+                        <tr>
+                            <th>Pekan</th>
+                            <th>Status</th>
+                            <th class="text-right">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200">
+                    <tbody>
                         @foreach($pekanList as $pekanGroup)
                             <tr>
-                                <td class="px-4 py-2 text-sm text-gray-600">
-                                    {{ $pekanGroup->pekan }}
+                                <td class="font-semibold text-slate-800">
+                                    Pekan {{ $pekanGroup->pekan }}
                                 </td>
-                                <td class="px-4 py-2 text-sm">
+                                <td>
                                     @php
                                         $status = $pekanGroup->items->first()->status_grouped;
                                         $color = match($status) {
@@ -33,27 +47,34 @@
                                             default => 'bg-gray-100 text-gray-800',
                                         };
                                     @endphp
-                                    <span class="px-2 py-1 rounded-full text-xs font-medium {{ $color }}">
+                                    <span class="status-badge {{ $color }}">
                                         {{ $status }}
                                     </span>
                                 </td>
-                                <td class="px-4 py-2">
+                                <td class="text-right">
                                     <a href="{{ route('kurtis.show', [
                                         'murid' => $pekanGroup->items->first()->murid_id,
                                         'group' => $pekanGroup->group_id
                                     ]) }}"
-                                    class="text-blue-600 hover:underline">
-                                        Lihat Detail
+                                    class="font-semibold text-emerald-700 hover:text-emerald-800">
+                                        Lihat detail →
                                     </a>
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
+                </div>
+                </div>
             @endforeach
-        </div>
-    @endforeach
-
             </div>
+        </section>
+        @empty
+            <div class="empty-state">
+                <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-xl">📚</div>
+                <h2 class="font-bold text-slate-900">Belum ada data Kurti</h2>
+                <p class="mt-1 text-sm text-slate-500">Aktivitas anak akan tampil setelah fasil menambahkannya.</p>
+            </div>
+        @endforelse
     </div>
 @endsection

@@ -1,3 +1,131 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply bg-slate-50 text-slate-800;
+    }
+
+    ::selection {
+        @apply bg-emerald-200 text-emerald-950;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+}
+
+@layer components {
+    .page-shell {
+        @apply mx-auto w-full max-w-7xl py-4 sm:py-8;
+    }
+
+    .page-header {
+        @apply mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between;
+    }
+
+    .page-eyebrow {
+        @apply text-xs font-bold uppercase tracking-[0.18em] text-emerald-600;
+    }
+
+    .page-title {
+        @apply mt-1 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl;
+    }
+
+    .page-description {
+        @apply mt-2 max-w-2xl text-sm leading-6 text-slate-500;
+    }
+
+    .surface {
+        @apply rounded-2xl border border-slate-200 bg-white shadow-sm;
+    }
+
+    .surface-header {
+        @apply flex flex-col gap-3 border-b border-slate-100 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6;
+    }
+
+    .surface-body {
+        @apply p-5 sm:p-6;
+    }
+
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus:ring-4 disabled:cursor-not-allowed disabled:opacity-50;
+    }
+
+    .btn-primary {
+        @apply btn bg-emerald-600 text-white shadow-sm hover:-translate-y-0.5 hover:bg-emerald-700 focus:ring-emerald-200;
+    }
+
+    .btn-secondary {
+        @apply btn bg-slate-100 text-slate-700 hover:bg-slate-200 focus:ring-slate-200;
+    }
+
+    .btn-danger {
+        @apply btn bg-rose-600 text-white shadow-sm hover:bg-rose-700 focus:ring-rose-200;
+    }
+
+    .btn-download {
+        @apply btn bg-slate-900 text-white shadow-sm hover:bg-slate-700 focus:ring-slate-300;
+    }
+
+    .field-label {
+        @apply mb-1.5 block text-sm font-semibold text-slate-700;
+    }
+
+    .field-control {
+        @apply w-full rounded-xl border-slate-300 bg-white px-3 py-2.5 text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500;
+    }
+
+    .field-help {
+        @apply mt-1.5 text-xs leading-5 text-slate-500;
+    }
+
+    .field-error {
+        @apply mt-1.5 text-sm font-medium text-rose-600;
+    }
+
+    .table-wrap {
+        @apply overflow-x-auto rounded-xl border border-slate-200;
+    }
+
+    .data-table {
+        @apply min-w-full divide-y divide-slate-200 text-sm;
+    }
+
+    .data-table thead {
+        @apply bg-slate-50;
+    }
+
+    .data-table th {
+        @apply whitespace-nowrap px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-500;
+    }
+
+    .data-table td {
+        @apply px-4 py-3 align-top text-slate-600;
+    }
+
+    .data-table tbody {
+        @apply divide-y divide-slate-100 bg-white;
+    }
+
+    .data-table tbody tr {
+        @apply transition hover:bg-emerald-50/40;
+    }
+
+    .status-badge {
+        @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold;
+    }
+
+    .empty-state {
+        @apply rounded-2xl border-2 border-dashed border-slate-200 bg-white px-6 py-12 text-center;
+    }
+
+    .auth-field {
+        @apply w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500;
+    }
+}

@@ -1,59 +1,70 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-6xl mx-auto py-8">
-    <h1 class="text-2xl font-bold mb-6">Dashboard Fasil</h1>
+<div class="page-shell">
+    <div class="page-header">
+        <div>
+            <p class="page-eyebrow">Ruang Fasilitator</p>
+            <h1 class="page-title">Dashboard Fasil</h1>
+            <p class="page-description">Pantau dan dokumentasikan aktivitas belajar setiap murid dalam kelas aktif.</p>
+        </div>
+        @if($classroom)
+            <a href="{{ route('rekap.kurti') }}" class="btn-download">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6m4 6V7m4 10v-3M5 21h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2Z"/></svg>
+                Lihat Rekap
+            </a>
+        @endif
+    </div>
 
     @if($classroom)
-        <div class="mb-10 bg-white shadow rounded-lg">
-            <div class="p-4 border-b">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-semibold">
-                        Kurti di Kelas "{{ $classroom->name }}"
-                    </h2>
-                    <a href="{{ route('rekap.kurti') }}"
-                    class="text-white text-sm bg-red-600 rounded hover:bg-red-500 px-4 py-2">
-                        Rekap
-                    </a>
+        <div class="surface">
+            <div class="surface-header">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Kelas aktif</p>
+                    <h2 class="mt-1 text-xl font-bold text-slate-900">{{ $classroom->name }}</h2>
                 </div>
+                <span class="status-badge bg-emerald-100 text-emerald-700">{{ $groupedByMurid->count() }} murid</span>
             </div>
-            <div class="p-4 space-y-8">
+            <div class="divide-y divide-slate-100">
 
                 @foreach($groupedByMurid as $murid)
-                    <div class="mb-8">
-                        <div class="flex items-center justify-between mb-4">
-                            <h2 class="text-xl font-semibold mb-4">{{ $murid->murid_name }}</h2>
+                    <section class="p-5 sm:p-6">
+                        <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-700">{{ mb_substr($murid->murid_name, 0, 1) }}</div>
+                                <h2 class="text-lg font-bold text-slate-900">{{ $murid->murid_name }}</h2>
+                            </div>
                             <a href="{{ route('kurtis.create', ['murid' => $murid->murid_id]) }}"
-                               class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-2 rounded-lg shadow">
+                               class="btn-primary w-full sm:w-auto">
                                 + Tambah Kurti
                             </a>
                         </div>
                         @foreach($murid->groups as $bulanGroup)
-                            <h3 class="text-md font-medium text-gray-700 mt-4 mb-2">
-                                Bulan: {{ \Carbon\Carbon::parse($bulanGroup->bulan . '-01')->format('F Y') }}
+                            <h3 class="mb-2 mt-5 text-sm font-bold text-slate-700">
+                                {{ \Carbon\Carbon::parse($bulanGroup->bulan . '-01')->translatedFormat('F Y') }}
                             </h3>
 
-                            <div class="overflow-x-auto">
-                                <table class="w-full border text-sm">
-                                    <thead class="bg-gray-100">
+                            <div class="table-wrap">
+                                <table class="data-table">
+                                    <thead>
                                         <tr>
-                                            <th class="px-4 py-2 border">Pekan</th>
-                                            <th class="px-4 py-2 border">Jumlah Aktivitas</th>
-                                            <th class="px-4 py-2 border">Detail</th>
+                                            <th>Pekan</th>
+                                            <th>Jumlah Aktivitas</th>
+                                            <th class="text-right">Detail</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach($bulanGroup->pekans as $pekanGroup)
-                                            <tr class="hover:bg-gray-50">
-                                                <td class="px-4 py-2 border">{{ $pekanGroup->pekan }}</td>
-                                                <td class="px-4 py-2 border">{{ $pekanGroup->items->count() }}</td>
-                                                <td class="px-4 py-2 border">
+                                            <tr>
+                                                <td class="font-semibold text-slate-800">Pekan {{ $pekanGroup->pekan }}</td>
+                                                <td>{{ $pekanGroup->items->count() }} aktivitas</td>
+                                                <td class="text-right">
                                                     <a href="{{ route('kurtis.show', [
                                                         'murid' => $murid->murid_id,
                                                         'group' => $pekanGroup->group_id
                                                     ]) }}"
-                                                    class="text-blue-500 hover:underline text-sm">
-                                                        Lihat
+                                                    class="font-semibold text-emerald-700 hover:text-emerald-800">
+                                                        Lihat detail →
                                                     </a>
                                                 </td>
                                             </tr>
@@ -62,13 +73,17 @@
                                 </table>
                             </div>
                         @endforeach
-                    </div>
+                    </section>
                 @endforeach
 
             </div>
         </div>
     @else
-        <p class="text-gray-400">Fasil belum terdaftar di kelas manapun.</p>
+        <div class="empty-state">
+            <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-xl">🏫</div>
+            <h2 class="font-bold text-slate-900">Belum ada kelas aktif</h2>
+            <p class="mt-1 text-sm text-slate-500">Akun fasil belum ditugaskan ke kelas manapun.</p>
+        </div>
     @endif
 </div>
 @endsection

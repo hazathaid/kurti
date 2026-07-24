@@ -1,21 +1,26 @@
 @extends('layouts.app')
 @section('content')
-    <div class="max-w-10xl mx-auto p-6 bg-white rounded-lg shadow">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-bold">Rekap Kelas {{ $classroom->name }}</h2>
+    <div class="page-shell">
+        <div class="page-header">
+            <div>
+                <p class="page-eyebrow">Ringkasan Kelas</p>
+                <h1 class="page-title">Rekap {{ $classroom->name }}</h1>
+                <p class="page-description">Status pengisian Kurti seluruh murid berdasarkan bulan dan pekan.</p>
+            </div>
             <a href="{{ route('kurtis.rekap.download') }}"
-                class="bg-red-600 text-white rounded hover:bg-red-500 px-4 py-2">
+                class="btn-download">
                 Download PDF
             </a>
         </div>
-        <div class="overflow-x-auto mt-4">
-            <table class="table-auto border-collapse border border-gray-400 w-full">
+        <div class="surface p-4 sm:p-6">
+        <div class="table-wrap">
+            <table class="data-table">
                 <thead>
                     <tr>
-                        <th class="border border-gray-400 px-2 py-1">Nama</th>
-                        <th class="border border-gray-400 px-2 py-1">Bulan</th>
-                        <th class="border border-gray-400 px-2 py-1">Pekan</th>
-                        <th class="border border-gray-400 px-2 py-1">Status</th>
+                        <th>Nama</th>
+                        <th>Bulan</th>
+                        <th>Pekan</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -23,26 +28,26 @@
                         @foreach ($murid->groups as $bulanGroup)
                             @foreach ($bulanGroup->pekans as $pekanGroup)
                                 <tr>
-                                    <td class="border border-gray-400 px-2 py-1">
+                                    <td class="font-semibold text-slate-800">
                                         {{ $murid->murid_name }}
                                     </td>
-                                    <td class="border border-gray-400 px-2 py-1">
+                                    <td>
                                         {{ $bulanGroup->bulan }}
                                     </td>
-                                    <td class="border border-gray-400 px-2 py-1">
+                                    <td>
                                         Pekan {{ $pekanGroup->pekan }}
                                     </td>
-                                    <td class="border border-gray-300 px-3 py-2">
+                                    <td>
                                         @if($pekanGroup->status === 'Sudah isi')
-                                            <span class="text-green-600 font-semibold">
+                                            <span class="status-badge bg-emerald-100 text-emerald-700">
                                                 {{ $pekanGroup->status }}
                                             </span>
                                         @elseif($pekanGroup->status === 'On progress')
-                                            <span class="text-yellow-600 font-semibold">
+                                            <span class="status-badge bg-amber-100 text-amber-700">
                                                 {{ $pekanGroup->status }}
                                             </span>
                                         @else
-                                            <span class="text-red-600 font-semibold">
+                                            <span class="status-badge bg-rose-100 text-rose-700">
                                                 {{ $pekanGroup->status }}
                                             </span>
                                         @endif
@@ -54,9 +59,10 @@
                 </tbody>
             </table>
         </div>
-        <div class="mt-6">
+        </div>
+        <div class="mt-5">
             <a href="{{ route('dashboard') }}"
-            class="inline-block px-4 py-2 bg-gray-200 hover:bg-gray-300 text-sm rounded-lg">
+            class="btn-secondary">
                 ← Kembali
             </a>
         </div>
