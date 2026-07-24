@@ -13,42 +13,44 @@
     <link rel="manifest" href="/icon/site.webmanifest" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="antialiased bg-gray-100">
-    <nav class="bg-gray-800 text-white flex justify-between items-center">
-        <div class="flex items-center gap-3">
-            <img src="{{ asset('logo.png') }}" alt="Kurti SAI" class="h-8 w-8 object-contain">
-            <span class="text-lg font-bold tracking-wide">Kurti SAI</span>
+<body class="min-h-screen antialiased bg-slate-50 text-slate-800">
+    <nav class="sticky top-0 z-40 border-b border-slate-700 bg-slate-900 text-white shadow-sm">
+        <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
+        <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+            <img src="{{ asset('logo.png') }}" alt="Kurti SAI" class="h-9 w-9 rounded-md bg-white object-contain">
+            <span class="mr-1 text-lg font-bold tracking-wide">Kurti SAI</span>
             <a href="#" target="_blank"
                onclick="event.preventDefault(); document.getElementById('comingSoonModal').classList.remove('hidden');"
-               class="bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded-lg text-sm">
+               class="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium transition hover:bg-blue-500">
                 Bukom
             </a>
             @if(in_array(Auth::user()->type, ['fasil', 'orangtua']))
                 <a href="{{ route('weekly-reports.index') }}"
-                   class="bg-emerald-500 hover:bg-emerald-600 px-3 py-1 rounded-lg text-sm">
+                   class="{{ request()->routeIs('weekly-reports.*') ? 'bg-emerald-500 ring-2 ring-emerald-300' : 'bg-slate-700 hover:bg-slate-600' }} rounded-lg px-3 py-2 text-sm font-medium transition">
                     Weekly Report
                 </a>
             @endif
         </div>
 
-        <div class="flex items-center gap-4">
-            <span>{{ Auth::user()->name }}</span>
+        <div class="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
+            <span class="hidden text-sm text-slate-200 sm:inline">{{ Auth::user()->name }}</span>
 
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
                 <button type="submit"
-                        class="bg-red-500 hover:bg-red-600 px-3 py-1 rounded-lg text-sm">
+                        class="rounded-lg bg-red-500 px-3 py-2 text-sm font-medium transition hover:bg-red-600">
                     Logout
                 </button>
             </form>
             <a href="https://wa.me/6285603155491" target="_blank"
-               class="bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded-lg text-sm">
-                Sampaikan Masukan
+               class="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium transition hover:bg-blue-500">
+                <span class="hidden sm:inline">Sampaikan </span>Masukan
             </a>
+        </div>
         </div>
     </nav>
 
-    <main class="p-6">
+    <main class="px-4 py-6 sm:px-6">
         @if (session('success'))
             <div
                 x-data="{ show: true }"

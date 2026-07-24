@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-3xl mx-auto py-8 px-4">
+<div class="mx-auto max-w-3xl py-4 sm:py-8">
     @if(session('success'))
         <div class="mb-4 rounded-lg bg-green-50 p-4 text-green-700">{{ session('success') }}</div>
     @endif
 
-    <div class="bg-white rounded-xl shadow-sm p-6">
+    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
         <div class="flex flex-wrap justify-between gap-3 border-b pb-5">
             <div>
                 <p class="text-sm text-gray-500">Weekly Report</p>
@@ -18,11 +18,11 @@
             </div>
             <div>
                 @if($report->read_at)
-                    <span class="rounded-full bg-green-100 text-green-700 text-xs font-medium px-3 py-1">
+                    <span class="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
                         Dibaca {{ $report->read_at->format('d M Y, H:i') }}
                     </span>
                 @else
-                    <span class="rounded-full bg-yellow-100 text-yellow-700 text-xs font-medium px-3 py-1">Belum dibaca orang tua</span>
+                    <span class="inline-flex rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-700">Belum dibaca orang tua</span>
                 @endif
             </div>
         </div>
@@ -52,9 +52,9 @@
                 <form method="POST" action="{{ route('weekly-reports.feedback', $report) }}">
                     @csrf
                     @method('PUT')
-                    <textarea name="parent_feedback" rows="4" maxlength="5000" class="w-full rounded-lg border-gray-300" placeholder="Tulis tanggapan atau pertanyaan jika ada...">{{ old('parent_feedback', $report->parent_feedback) }}</textarea>
+                    <textarea name="parent_feedback" rows="4" maxlength="5000" class="w-full rounded-xl border-gray-300 px-3 py-3 shadow-sm focus:border-emerald-500 focus:ring-emerald-500" placeholder="Tulis tanggapan atau pertanyaan jika ada...">{{ old('parent_feedback', $report->parent_feedback) }}</textarea>
                     @error('parent_feedback') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
-                    <button class="mt-3 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white">Simpan Feedback</button>
+                    <button class="mt-3 w-full rounded-xl bg-emerald-600 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-emerald-700 sm:w-auto">Simpan Feedback</button>
                 </form>
             @else
                 <p class="text-gray-700 whitespace-pre-line">{{ $report->parent_feedback ?: 'Belum ada feedback.' }}</p>
@@ -65,6 +65,6 @@
         </section>
     </div>
 
-    <a href="{{ route('weekly-reports.index') }}" class="inline-block mt-5 text-blue-600 hover:underline">← Kembali ke Weekly Report</a>
+    <a href="{{ route('weekly-reports.index') }}" class="mt-5 inline-block font-medium text-emerald-700 hover:underline">← Kembali ke Weekly Report</a>
 </div>
 @endsection
