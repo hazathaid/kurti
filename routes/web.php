@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KurtiController;
 use App\Http\Controllers\KurtiSubmissionController;
+use App\Http\Controllers\WeeklyReportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, 'index'])
@@ -27,6 +28,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/kurti-submissions', [KurtiSubmissionController::class, 'store'])->name('kurti-submissions.store');
     Route::get('kurti/rekap', [KurtiController::class, 'rekap'])->name('rekap.kurti');
     Route::get('/kurtis/rekap/download', [KurtiController::class, 'downloadRekap'])->name('kurtis.rekap.download');
+    Route::get('/weekly-reports', [WeeklyReportController::class, 'index'])->name('weekly-reports.index');
+    Route::get('/weekly-reports/create', [WeeklyReportController::class, 'create'])->name('weekly-reports.create');
+    Route::post('/weekly-reports', [WeeklyReportController::class, 'store'])->name('weekly-reports.store');
+    Route::get('/weekly-reports/{weeklyReport}', [WeeklyReportController::class, 'show'])->name('weekly-reports.show');
+    Route::put('/weekly-reports/{weeklyReport}/feedback', [WeeklyReportController::class, 'feedback'])->name('weekly-reports.feedback');
 });
 
 Route::prefix('admin')

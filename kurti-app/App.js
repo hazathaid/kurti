@@ -16,6 +16,8 @@ import DashboardFasil from "./src/screens/DashboardFasil";
 import DashboardOrtu from "./src/screens/DashboardOrtu";
 import KurtiDetail from "./src/screens/DetailKurtiScreen";
 import LoginScreen from "./src/screens/LoginScreen";
+import WeeklyReportsScreen from "./src/screens/WeeklyReportsScreen";
+import CreateWeeklyReportScreen from "./src/screens/CreateWeeklyReportScreen";
 
 const Stack = createNativeStackNavigator();
 const navigationRef = createNavigationContainerRef();
@@ -68,6 +70,7 @@ function RootNavigator() {
               component={DashboardOrtu}
             />
             <Stack.Screen name="KurtiDetail" component={KurtiDetail} />
+            <Stack.Screen name="WeeklyReports" component={WeeklyReportsScreen} options={{ title: "Weekly Report" }} />
           </>
         ) : (
           <>
@@ -77,6 +80,8 @@ function RootNavigator() {
             />
             <Stack.Screen name="KurtiDetail" component={KurtiDetail} />
             <Stack.Screen name="CreateMultipleKurti" component={CreateMultipleKurtiScreen} />
+            <Stack.Screen name="WeeklyReports" component={WeeklyReportsScreen} options={{ title: "Weekly Report" }} />
+            <Stack.Screen name="CreateWeeklyReport" component={CreateWeeklyReportScreen} options={{ title: "Buat Weekly Report" }} />
           </>
         )
       ) : (

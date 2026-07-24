@@ -40,6 +40,12 @@ export const registerForPushNotifications = async () => {
 
 export const getNotificationRoute = (response) => {
   const data = response?.notification?.request?.content?.data;
+  if (data?.weeklyReportId != null) {
+    return {
+      name: "WeeklyReports",
+      params: { reportId: data.weeklyReportId },
+    };
+  }
   if (data?.muridId == null || data?.groupId == null) return null;
 
   return {

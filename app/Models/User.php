@@ -108,4 +108,9 @@ class User extends Authenticatable
         return $this->hasMany(KurtiSubmission::class, 'murid_id');
     }
 
+    public function weeklyReports()
+    {
+        return $this->hasMany(WeeklyReport::class, 'murid_id');
+    }
+
 }

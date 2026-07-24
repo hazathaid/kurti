@@ -110,6 +110,9 @@ const DashboardOrtu = ({ navigation }) => {
       }
     >
       {errorMessage ? <Text style={styles.inlineError}>{errorMessage}</Text> : null}
+      <TouchableOpacity style={styles.reportButton} onPress={() => navigation.navigate("WeeklyReports")}>
+        <Text style={styles.reportButtonText}>Lihat Weekly Report</Text>
+      </TouchableOpacity>
 
       {muridData.length === 0 ? (
         <EmptyState title="Belum ada data Kurti" description="Data aktivitas anak akan tampil di sini setelah tersedia." />
@@ -191,4 +194,6 @@ const styles = StyleSheet.create({
   chevron: { fontSize: 24, color: colors.primary, lineHeight: 24 },
   activityText: { color: colors.textMuted, marginTop: spacing.xs },
   statusText: { color: colors.primary, fontWeight: "600", marginTop: 6 },
+  reportButton: { minHeight: minimumTouchSize, borderRadius: radius.md, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center", marginBottom: spacing.lg },
+  reportButtonText: { color: colors.onPrimary, fontWeight: "700" },
 });

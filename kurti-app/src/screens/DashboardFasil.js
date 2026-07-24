@@ -110,6 +110,9 @@ const DashboardFasil = ({ navigation, route }) => {
         <>
           <Text style={styles.classLabel}>Kelas aktif</Text>
           <Text style={styles.className}>{classroomName || "Kelas belum diketahui"}</Text>
+          <TouchableOpacity style={styles.reportButton} onPress={() => navigation.navigate("WeeklyReports")}>
+            <Text style={styles.reportButtonText}>Weekly Report</Text>
+          </TouchableOpacity>
 
           {muridData.map((murid) => (
             <View key={murid.murid_id} style={styles.studentCard}>
@@ -198,4 +201,6 @@ const styles = StyleSheet.create({
   weekTitle: { fontSize: 16, fontWeight: "700", color: colors.text },
   activityCount: { color: colors.textMuted, marginTop: spacing.xs },
   chevron: { fontSize: 24, color: colors.primary, lineHeight: 24 },
+  reportButton: { minHeight: minimumTouchSize, borderRadius: radius.md, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center", marginBottom: spacing.lg },
+  reportButtonText: { color: colors.onPrimary, fontWeight: "700" },
 });
