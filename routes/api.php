@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\KurtiController;
+use App\Http\Controllers\Api\WeeklyReportController;
 use App\Http\Controllers\UserDeviceController;
 use App\Http\Controllers\Api\WeeklyReportController;
 
@@ -16,6 +17,7 @@ Route::get('/', [AuthController::class, 'test']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('dashboard', [DashboardController::class, 'index']);
+    Route::get('weekly-report', [WeeklyReportController::class, 'index']);
     Route::post('/kurtis', [KurtiController::class, 'store']);
     Route::get('/kurtis/{muridId}/{groupId}', [KurtiController::class, 'show']);
     Route::put('/kurtis/{id}/catatan', [KurtiController::class, 'updateCatatan']);

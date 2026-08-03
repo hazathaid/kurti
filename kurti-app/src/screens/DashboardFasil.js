@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useContext, useLayoutEffect, useRef, useState } from "react";
 import {
@@ -104,6 +105,22 @@ const DashboardFasil = ({ navigation, route }) => {
     >
       {errorMessage ? <Text style={styles.inlineError}>{errorMessage}</Text> : null}
 
+      <TouchableOpacity
+        style={styles.reportButton}
+        accessibilityRole="button"
+        accessibilityLabel="Buka laporan mingguan"
+        onPress={() => navigation.navigate("WeeklyReport")}
+      >
+        <View style={styles.reportIcon}>
+          <Ionicons name="calendar-outline" size={22} color={colors.primary} />
+        </View>
+        <View style={styles.reportCopy}>
+          <Text style={styles.reportTitle}>Laporan Mingguan</Text>
+          <Text style={styles.reportDescription}>Lihat ringkasan aktivitas dan catatan per pekan</Text>
+        </View>
+        <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
+      </TouchableOpacity>
+
       {muridData.length === 0 ? (
         <EmptyState title="Belum ada murid" description="Belum ada murid pada kelas aktif Anda." />
       ) : (
@@ -187,6 +204,11 @@ const styles = StyleSheet.create({
   logoutButton: { marginRight: spacing.lg, minHeight: minimumTouchSize, justifyContent: "center" },
   logoutText: { color: colors.danger, fontWeight: "bold" },
   inlineError: { marginBottom: spacing.md, borderRadius: radius.md, backgroundColor: colors.dangerSoft, color: colors.danger, padding: spacing.md },
+  reportButton: { flexDirection: "row", alignItems: "center", minHeight: 72, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, padding: spacing.md, marginBottom: spacing.lg },
+  reportIcon: { width: minimumTouchSize, height: minimumTouchSize, borderRadius: radius.md, backgroundColor: colors.primarySoft, alignItems: "center", justifyContent: "center", marginRight: spacing.md },
+  reportCopy: { flex: 1, marginRight: spacing.sm },
+  reportTitle: { color: colors.text, fontSize: 16, fontWeight: "700" },
+  reportDescription: { color: colors.textMuted, fontSize: 12, marginTop: 2 },
   classLabel: { color: colors.textMuted, fontSize: 12, textTransform: "uppercase", letterSpacing: 0.6 },
   className: { fontSize: 22, fontWeight: "700", color: colors.text, marginTop: 2, marginBottom: spacing.lg },
   studentCard: { backgroundColor: colors.surface, borderRadius: radius.lg, padding: spacing.lg, marginBottom: spacing.lg, elevation: 2, shadowColor: colors.text, shadowOpacity: 0.08, shadowOffset: { width: 0, height: 2 }, shadowRadius: 5 },

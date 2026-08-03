@@ -69,6 +69,7 @@ function RootNavigator() {
               name="DashboardOrtu"
               component={DashboardOrtu}
             />
+            <Stack.Screen name="WeeklyReport" component={WeeklyReportScreen} />
             <Stack.Screen name="KurtiDetail" component={KurtiDetail} />
             <Stack.Screen name="WeeklyReports" component={WeeklyReportsScreen} options={{ title: "Weekly Report" }} />
           </>
@@ -78,6 +79,7 @@ function RootNavigator() {
               name="DashboardFasil"
               component={DashboardFasil}
             />
+            <Stack.Screen name="WeeklyReport" component={WeeklyReportScreen} />
             <Stack.Screen name="KurtiDetail" component={KurtiDetail} />
             <Stack.Screen name="CreateMultipleKurti" component={CreateMultipleKurtiScreen} />
             <Stack.Screen name="WeeklyReports" component={WeeklyReportsScreen} options={{ title: "Weekly Report" }} />

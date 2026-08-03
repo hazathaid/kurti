@@ -8,6 +8,7 @@ export const colors = {
   background: "#f1f5f9",
   surface: "#ffffff",
   border: "#cbd5e1",
+  track: "#e2e8f0",
   primarySoft: "#eff6ff",
   dangerSoft: "#fee2e2",
   darkBackground: "#1a1d29",
